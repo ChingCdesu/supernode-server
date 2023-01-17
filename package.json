@@ -6,8 +6,9 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
-    "build:n2n": "cmake-js compile -d native",
+    "build": "pnpm run build:server && pnpm run build:native",
+    "build:server": "nest build",
+    "build:native": "cmake-js compile -d native",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
