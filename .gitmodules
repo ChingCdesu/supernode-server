@@ -1,0 +1,4 @@
+[submodule "native/thirdparty/n2n"]
+	path = native/thirdparty/n2n
+	url = https://github.com/ChingCdesu/n2n.git
+	branch = 3.0-stable
