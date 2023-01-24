@@ -18,5 +18,5 @@ RUN npm i -g pnpm
 COPY package.json pnpm-lock.yaml /app/
 RUN pnpm i --prod
 COPY --from=build /code/dist /app/dist
-COPY --from=build /code/native/build/ /app/native/build/
+COPY --from=build /code/native/build/node-supernode.node /app/native/build/node-supernode.node
 CMD ["pnpm", "start:prod"]
