@@ -13,13 +13,12 @@ RUN pnpm i
 RUN pnpm run build
 
 FROM node:lts-alpine
+WORKDIR /app
 RUN apk update --no-cache
 RUN apk add bash
 RUN npm i -g pnpm
-COPY --from=build /code/dist /app/dist
-COPY --from=build /code/package.json /app/package.json
-COPY --from=build /code/pnpm-lock.yaml /app/pnpm-lock.yaml
-COPY --from=build /code/native/build/Release /app/native/build/Release
+COPY package.json pnpm-lock.yaml /app/
 RUN pnpm i --prod
-WORKDIR /app
+COPY --from=build /code/dist /app/dist
+COPY --from=build /code/native/build/Release /app/native/build/Release
 CMD ["pnpm", "start:prod"]
