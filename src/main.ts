@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-const supernode = require('../native/build/Debug/node-supernode.node');
+const supernode = require('../native/build/node-supernode.node');
 
 async function bootstrap() {
   supernode.createSn(function (sn) {

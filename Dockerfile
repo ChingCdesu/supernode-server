@@ -1,15 +1,12 @@
 FROM node:lts-alpine as build
-WORKDIR /
+WORKDIR /code
 
 RUN apk update --no-cache
 RUN apk add g++ cmake ninja linux-headers git
 RUN npm i -g cmake-js pnpm
 
-RUN git clone https://github.com/ChingCdesu/supernode-server.git code
+COPY . .
 
-WORKDIR /code
-RUN git submodule update --init
-COPY native/CMakeLists.txt /code/native/
 RUN pnpm i
 RUN pnpm run build
 

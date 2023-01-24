@@ -10,7 +10,7 @@ add_subdirectory(thirdparty/n2n)
 
 aux_source_directory(src SOURCE_FILES)
 
-add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES} ${CMAKE_JS_SRC})
+add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
 target_link_libraries(${PROJECT_NAME} n2n ${CMAKE_JS_LIB})
 
