@@ -8,11 +8,11 @@
   "scripts": {
     "build": "pnpm run build:native && pnpm run build:server",
     "build:server": "nest build",
-    "build:native": "cmake-js compile -d native",
+    "build:native": "cmake-js compile -d native -B Release",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "pnpm run build:native && nest start",
     "start:dev": "pnpm run build:native && nest start --watch",
-    "start:debug": "cmake-js compile -D -d native && nest start --debug --watch",
+    "start:debug": "cmake-js compile -d native -B Debug && nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
