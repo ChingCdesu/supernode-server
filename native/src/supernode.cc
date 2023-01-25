@@ -2,20 +2,20 @@
 
 SupernodeOption::SupernodeOption(const Napi::Object &options) {
   if (options["port"].IsNumber()) {
-    this->port = options["port"].As<int>();
+    this->port = options["port"].As<Napi::Number>().Int32Value();
   }
   if (options["federationName"].IsString()) {
-    this->federationName = options["federationName"].As<std::string>();
+    this->federationName = options["federationName"].As<Napi::String>().Utf8Value();
   }
   if (options["disableSpoofingProtection"].IsBoolean()) {
     this->disableSpoofingProtection =
-        options["disableSpoofingProtection"].As<bool>();
+        options["disableSpoofingProtection"].As<Napi::Boolean>().Value();
   }
   if (options["subnetRange"].IsString()) {
-    this->subnetRange = options["subnetRange"].As<std::string>();
+    this->subnetRange = options["subnetRange"].As<Napi::String>().Utf8Value();
   }
   if (options["federationParent"].IsString()) {
-    this->federationParent = options["federationParent"].As<std::string>();
+    this->federationParent = options["federationParent"].As<Napi::String>().Utf8Value();
   }
 }
 
