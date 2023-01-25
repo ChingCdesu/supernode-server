@@ -19,10 +19,16 @@ const bs = new BuildSystem({
   config: buildType,
 });
 
-bs.compile().then(() => {
-  const targetFile = path.resolve(buildDir, buildType, 'node-supernode.node');
-  const exists = fs.existsSync(targetFile);
-  if (exists) {
-    fs.copyFileSync(targetFile, path.resolve(buildDir, 'node-supernode.node'));
-  }
-});
+bs.configure()
+  .then(() => bs.compile())
+  .then(() => {
+    const targetFile = path.resolve(bs.cmake.buildDir, 'node-supernode.node');
+    const exists = fs.existsSync(targetFile);
+    if (exists) {
+      console.log('copying files...');
+      fs.copyFileSync(
+        targetFile,
+        path.resolve(buildDir, 'node-supernode.node'),
+      );
+    }
+  });

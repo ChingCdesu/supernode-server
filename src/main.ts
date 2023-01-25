@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-const supernode = require('../native/build/node-supernode.node');
+import { createSn } from './native';
 
 async function bootstrap() {
-  supernode.createSn(function (sn) {
+  createSn(function (sn) {
     console.log(`supernode created: ${JSON.stringify(sn)}`);
   });
   const app = await NestFactory.create(AppModule);
