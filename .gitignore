@@ -1,6 +1,8 @@
+# managed packages
+/node_modules
+
 # compiled output
 /dist
-/node_modules
 build
 
 # Logs
@@ -30,3 +32,6 @@ lerna-debug.log*
 
 # IDE - VSCode
 .vscode/*
+
+# local env files
+*.local
