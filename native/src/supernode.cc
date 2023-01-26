@@ -132,16 +132,13 @@ Supernode::Supernode(const SupernodeOption &options) : _worker() {
       return;
     }
 
-    traceEvent(
-        TRACE_NORMAL,
-        "the network range for community ip address service is '%s...%s/%hhu'",
-        ip_min_str, ip_max_str, bitlen);
+    traceEvent(TRACE_NORMAL, "Subnet Range: %s", options.subnetRange.c_str());
 
     _sn.min_auto_ip_net.net_addr = ntohl(net_min);
     _sn.min_auto_ip_net.net_bitlen = bitlen;
     _sn.max_auto_ip_net.net_addr = ntohl(net_max);
     _sn.max_auto_ip_net.net_bitlen = bitlen;
-    traceEvent(TRACE_NORMAL, "Subnet Range: %s", options.subnetRange.c_str());
+    
   }
 }
 
