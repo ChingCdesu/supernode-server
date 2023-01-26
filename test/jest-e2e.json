@@ -8,6 +8,6 @@
   },
   "moduleNameMapper": {
     "^@/(.*)$": "<rootDir>/../src/$1",
-    "^@native/(.*)$": "<rootDir>/../native/$1"
+    "^@Native/(.*)$": "<rootDir>/../native/$1"
   }
 }
