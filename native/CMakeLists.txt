@@ -5,6 +5,9 @@ set (CMAKE_CXX_STANDARD 17)
 project(node-supernode)
 add_definitions(-DCMAKE_BUILD)
 include_directories(${CMAKE_JS_INC} thirdparty/n2n/include)
+if(DEFINED WIN32)
+  include_directories(thirdparty/n2n/win32)
+endif(DEFINED WIN32)
 
 add_subdirectory(thirdparty/n2n)
 
