@@ -19,7 +19,7 @@ export function createServer(options?: Partial<SupernodeOptions>) {
   native.createServer(options);
 }
 
-export async function startServer(): Promise<Supernode> {
+export function startServer(): Promise<Supernode> {
   return native.startServer();
 }
 
