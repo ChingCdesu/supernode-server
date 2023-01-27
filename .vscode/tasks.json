@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "build:debug",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: build:debug",
+			"detail": "dotenv -c development pnpm run build:native && pnpm run build:server"
+		}
+	]
+}

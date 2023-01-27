@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      /** 
+       * zh-CN: 对需要调试native部分的用户
+       *  安装`CodeLLDB`插件（最好直接从网站上下载vsix文件安装）
+       *  链接🔗：https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb
+       * en-US: For native debug
+       *  Install `CodeLLDB` plugin (Prefered download vsix from browser and install)
+       *  Link🔗: https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb
+       */
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug",
+      "program": "/usr/local/bin/node",
+      "args": ["dist/main.js"],
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "npm: build:debug"
+    }
+  ]
+}
