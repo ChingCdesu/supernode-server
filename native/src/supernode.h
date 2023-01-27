@@ -1,9 +1,10 @@
 #pragma once
 
+#include <functional>
 #include <napi.h>
 #include <string>
-#include <functional>
 #include <thread>
+#include <vector>
 
 extern "C" {
 #include "n2n.h"
@@ -25,31 +26,44 @@ struct SupernodeOption {
   std::string subnetRange = SN_DEFAULT_SUBNET_RANGE;
 };
 
+struct CommunityUser {
+  CommunityUser(const std::string &name, const std::string &publicKey);
+  CommunityUser(const Napi::Object &user);
+  std::string name;
+  std::string publicKey;
+};
+
+struct CommunityOption {
+  CommunityOption() = delete;
+  CommunityOption(const Napi::Object &options);
+  std::string name;
+  std::vector<CommunityUser> users;
+};
+
 class Supernode {
-public:
+public: // constructors and destructors
   Supernode();
   Supernode(const SupernodeOption &options);
   Supernode(const Napi::Object &options);
   Supernode(const Supernode &) = delete;
   Supernode(Supernode &&) = delete;
-  Napi::Object toObject(Napi::Env env);
   ~Supernode();
 
-public:
+public: // operations
   void start();
   void stop();
-  // void addCommunity();
-  // void deleteCommunity();
-  // void updateCommunity();
-  // void listCommunities();
-  // void getCommunity();
-  // void getEdges();
+  void loadCommunities(const Napi::Object &communitiesObj);
+  Napi::Object toObject(Napi::Env env);
 
-public:
-  std::function<void(Supernode*)> onCreated;
+private: // complex apply
+  void applySubnetRange(const std::string &subnetStr);
+
+public: // callback functions
+  std::function<void(Supernode *)> onCreated;
   std::function<void()> onReleased;
   std::function<void()> onError;
-private:
+
+private: // members
   n2n_sn_t _sn;
   int _keep_running = 0;
   int _exit_code = 0;

@@ -22,6 +22,26 @@ SupernodeOption::SupernodeOption(const Napi::Object &options) {
   }
 }
 
+CommunityUser::CommunityUser(const std::string &name,
+                             const std::string &publicKey)
+    : name(name), publicKey(publicKey) {}
+
+CommunityUser::CommunityUser(const Napi::Object &user) {
+  if (!user["name"].IsString()) {
+    throw std::invalid_argument("\'user.name\' must be string");
+  }
+  if (!user["publicKey"].IsString()) {
+    throw std::invalid_argument("\'user.publicKey\' must be string");
+  }
+
+  this->name = user["name"].As<Napi::String>().Utf8Value();
+  this->publicKey = user["publicKey"].As<Napi::String>().Utf8Value();
+}
+
+CommunityOption::CommunityOption(const Napi::Object &options) {
+  // TODO: parse CommunityOption from JsObject
+}
+
 Supernode::Supernode() : Supernode(SupernodeOption()) {}
 
 Supernode::Supernode(const SupernodeOption &options) : _worker() {
@@ -93,53 +113,7 @@ Supernode::Supernode(const SupernodeOption &options) : _worker() {
   _sn.override_spoofing_protection = options.disableSpoofingProtection ? 1 : 0;
   traceEvent(TRACE_NORMAL, "\tDisable spoofing protection: %s",
              options.disableSpoofingProtection ? "yes" : "no");
-  {
-    dec_ip_str_t ip_min_str = {'\0'};
-    dec_ip_str_t ip_max_str = {'\0'};
-    in_addr_t net_min, net_max;
-    uint8_t bitlen;
-    uint32_t mask;
-    char arg[50];
-    strcpy(arg, options.subnetRange.c_str());
-    if (sscanf(arg, "%15[^\\-]-%15[^/]/%hhu", ip_min_str, ip_max_str,
-               &bitlen) != 3) {
-      traceEvent(TRACE_WARNING, "bad net-net/bit format '%s'.", arg);
-      return;
-    }
-
-    net_min = inet_addr(ip_min_str);
-    net_max = inet_addr(ip_max_str);
-    mask = bitlen2mask(bitlen);
-    if ((net_min == (in_addr_t)(-1)) || (net_min == INADDR_NONE) ||
-        (net_min == INADDR_ANY) || (net_max == (in_addr_t)(-1)) ||
-        (net_max == INADDR_NONE) || (net_max == INADDR_ANY) ||
-        (ntohl(net_min) > ntohl(net_max)) || ((ntohl(net_min) & ~mask) != 0) ||
-        ((ntohl(net_max) & ~mask) != 0)) {
-      traceEvent(
-          TRACE_WARNING,
-          "bad network range '%s...%s/%u' in '%s', defaulting to '%s...%s/%d'",
-          ip_min_str, ip_max_str, bitlen, arg, N2N_SN_MIN_AUTO_IP_NET_DEFAULT,
-          N2N_SN_MAX_AUTO_IP_NET_DEFAULT, N2N_SN_AUTO_IP_NET_BIT_DEFAULT);
-      return;
-    }
-
-    if ((bitlen > 30) || (bitlen == 0)) {
-      traceEvent(TRACE_WARNING,
-                 "bad prefix '%hhu' in '%s', defaulting to '%s...%s/%d'",
-                 bitlen, arg, N2N_SN_MIN_AUTO_IP_NET_DEFAULT,
-                 N2N_SN_MAX_AUTO_IP_NET_DEFAULT,
-                 N2N_SN_AUTO_IP_NET_BIT_DEFAULT);
-      return;
-    }
-
-    traceEvent(TRACE_NORMAL, "Subnet Range: %s", options.subnetRange.c_str());
-
-    _sn.min_auto_ip_net.net_addr = ntohl(net_min);
-    _sn.min_auto_ip_net.net_bitlen = bitlen;
-    _sn.max_auto_ip_net.net_addr = ntohl(net_max);
-    _sn.max_auto_ip_net.net_bitlen = bitlen;
-    
-  }
+  applySubnetRange(options.subnetRange);
 }
 
 Supernode::Supernode(const Napi::Object &options)
@@ -152,8 +126,11 @@ Napi::Object Supernode::toObject(Napi::Env env) {
   obj.Set("version", _sn.version);
   obj.Set("communityCount", HASH_COUNT(_sn.communities));
   obj.Set("federationName", _sn.federation->community);
-  obj.Set("federationParent", _sn.federation->edges->ip_addr);
+  if (_sn.federation->edges) {
+    obj.Set("federationParent", _sn.federation->edges->ip_addr);
+  }
   obj.Set("disableSpoofingProtection", (bool)_sn.override_spoofing_protection);
+  // TODO: subnetRange to string
   // obj.Set("subnetRange", _sn.min_auto_ip_net)
   return obj;
 }
@@ -170,10 +147,61 @@ void Supernode::start() {
   onCreated(this);
 }
 
+void Supernode::loadCommunities(const Napi::Object &communitiesObj) {
+  // TODO
+}
+
+void Supernode::applySubnetRange(const std::string &subnetStr) {
+  dec_ip_str_t ip_min_str = {'\0'};
+  dec_ip_str_t ip_max_str = {'\0'};
+  in_addr_t net_min, net_max;
+  uint8_t bitlen;
+  uint32_t mask;
+  char str[50];
+  strcpy(str, subnetStr.c_str());
+  if (sscanf(str, "%15[^\\-]-%15[^/]/%hhu", ip_min_str, ip_max_str, &bitlen) !=
+      3) {
+    traceEvent(TRACE_WARNING, "bad net-net/bit format '%s'.", str);
+    return;
+  }
+
+  net_min = inet_addr(ip_min_str);
+  net_max = inet_addr(ip_max_str);
+  mask = bitlen2mask(bitlen);
+  if ((net_min == (in_addr_t)(-1)) || (net_min == INADDR_NONE) ||
+      (net_min == INADDR_ANY) || (net_max == (in_addr_t)(-1)) ||
+      (net_max == INADDR_NONE) || (net_max == INADDR_ANY) ||
+      (ntohl(net_min) > ntohl(net_max)) || ((ntohl(net_min) & ~mask) != 0) ||
+      ((ntohl(net_max) & ~mask) != 0)) {
+    traceEvent(
+        TRACE_WARNING,
+        "bad network range '%s...%s/%u' in '%s', defaulting to '%s...%s/%d'",
+        ip_min_str, ip_max_str, bitlen, str, N2N_SN_MIN_AUTO_IP_NET_DEFAULT,
+        N2N_SN_MAX_AUTO_IP_NET_DEFAULT, N2N_SN_AUTO_IP_NET_BIT_DEFAULT);
+    return;
+  }
+
+  if ((bitlen > 30) || (bitlen == 0)) {
+    traceEvent(TRACE_WARNING,
+               "bad prefix '%hhu' in '%s', defaulting to '%s...%s/%d'", bitlen,
+               str, N2N_SN_MIN_AUTO_IP_NET_DEFAULT,
+               N2N_SN_MAX_AUTO_IP_NET_DEFAULT, N2N_SN_AUTO_IP_NET_BIT_DEFAULT);
+    return;
+  }
+
+  traceEvent(TRACE_NORMAL, "Subnet Range: %s", subnetStr.c_str());
+
+  _sn.min_auto_ip_net.net_addr = ntohl(net_min);
+  _sn.min_auto_ip_net.net_bitlen = bitlen;
+  _sn.max_auto_ip_net.net_addr = ntohl(net_max);
+  _sn.max_auto_ip_net.net_bitlen = bitlen;
+}
+
 void Supernode::stop() {
   if (_worker.joinable()) {
     _keep_running = 0;
     _worker.join();
+    sn_term(&_sn);
     onReleased();
   }
 }

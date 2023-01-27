@@ -37,11 +37,24 @@ Napi::Value startServer(const Napi::CallbackInfo &info) {
   pSn->onCreated = [&](Supernode *sn) {
     defered.Resolve(sn->toObject(info.Env()));
   };
+  pSn->start();
 end:
   return defered.Promise();
 }
 
 void stopServer(const Napi::CallbackInfo &info) { pSn->stop(); }
+
+void loadCommunities(const Napi::CallbackInfo &info) {
+  if (nullptr != pSn) {
+    return;
+  }
+  if (!info[0].IsObject()) {
+    Napi::Error::New(info.Env(), "arguments \"options\" must be object type")
+        .ThrowAsJavaScriptException();
+    return;
+  }
+  pSn->loadCommunities(info[0].As<Napi::Object>());
+}
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports.Set(Napi::String::New(env, "createServer"),
@@ -50,6 +63,8 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
               Napi::Function::New(env, startServer));
   exports.Set(Napi::String::New(env, "stopServer"),
               Napi::Function::New(env, stopServer));
+  exports.Set(Napi::String::New(env, "loadCommunities"),
+              Napi::Function::New(env, loadCommunities));
   return exports;
 }
 
