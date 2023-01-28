@@ -27,6 +27,7 @@ struct SupernodeOption {
 };
 
 struct CommunityUser {
+  CommunityUser() = delete;
   CommunityUser(const std::string &name, const std::string &publicKey);
   CommunityUser(const Napi::Object &user);
   std::string name;
@@ -52,11 +53,12 @@ public: // constructors and destructors
 public: // operations
   void start();
   void stop();
-  void loadCommunities(const Napi::Object &communitiesObj);
+  void loadCommunities(const Napi::Array &communities);
   Napi::Object toObject(Napi::Env env);
 
 private: // complex apply
   void applySubnetRange(const std::string &subnetStr);
+  void applyCommunities(const std::vector<CommunityOption> &communities);
 
 public: // callback functions
   std::function<void(Supernode *)> onCreated;

@@ -1,4 +1,5 @@
 #include "supernode.h"
+#include "sn_utils.h"
 #include <exception>
 
 SupernodeOption::SupernodeOption(const Napi::Object &options) {
@@ -28,10 +29,10 @@ CommunityUser::CommunityUser(const std::string &name,
 
 CommunityUser::CommunityUser(const Napi::Object &user) {
   if (!user["name"].IsString()) {
-    throw std::invalid_argument("\'user.name\' must be string");
+    throw std::invalid_argument("\'user.name\' must be \'string\'");
   }
   if (!user["publicKey"].IsString()) {
-    throw std::invalid_argument("\'user.publicKey\' must be string");
+    throw std::invalid_argument("\'user.publicKey\' must be \'string\'");
   }
 
   this->name = user["name"].As<Napi::String>().Utf8Value();
@@ -39,7 +40,21 @@ CommunityUser::CommunityUser(const Napi::Object &user) {
 }
 
 CommunityOption::CommunityOption(const Napi::Object &options) {
-  // TODO: parse CommunityOption from JsObject
+  if (!options["name"].IsString()) {
+    throw std::invalid_argument("\'community.name\' must be \'string\'");
+  }
+  if (!options["users"].IsArray()) {
+    throw std::invalid_argument("\'community.users\' must be \'array\'");
+  }
+
+  this->name = options["name"].As<Napi::String>().Utf8Value();
+  const auto users = options["users"].As<Napi::Array>();
+  for (auto index = 0; index < users.Length(); ++index) {
+    if (!users[index].IsObject()) {
+      throw std::invalid_argument("\'community.users[%d]\' must be \'object\'");
+    }
+    this->users.emplace_back(users[index].As<Napi::Object>());
+  }
 }
 
 Supernode::Supernode() : Supernode(SupernodeOption()) {}
@@ -147,8 +162,17 @@ void Supernode::start() {
   onCreated(this);
 }
 
-void Supernode::loadCommunities(const Napi::Object &communitiesObj) {
-  // TODO
+void Supernode::loadCommunities(const Napi::Array &communities) {
+  std::vector<CommunityOption> vCommunities;
+  for (auto index = 0; index < communities.Length(); ++index) {
+    if (!communities[index].IsObject()) {
+      traceEvent(TRACE_WARNING,
+                 "\'communities[%d]\' must be \'object\', skipped", index);
+      continue;
+    }
+    vCommunities.emplace_back(communities[index].As<Napi::Object>());
+  }
+  applyCommunities(vCommunities);
 }
 
 void Supernode::applySubnetRange(const std::string &subnetStr) {
@@ -195,6 +219,97 @@ void Supernode::applySubnetRange(const std::string &subnetStr) {
   _sn.min_auto_ip_net.net_bitlen = bitlen;
   _sn.max_auto_ip_net.net_addr = ntohl(net_max);
   _sn.max_auto_ip_net.net_bitlen = bitlen;
+}
+
+void Supernode::applyCommunities(
+    const std::vector<CommunityOption> &communities) {
+  // TODO
+  sn_user_t *user, *tmp_user;
+  n2n_desc_t username;
+
+  struct sn_community *comm, *tmp_comm;
+  struct peer_info *edge, *tmp_edge;
+  node_supernode_association_t *assoc, *tmp_assoc;
+  n2n_tcp_connection_t *conn;
+  struct sn_community_regular_expression *re, *tmp_re;
+
+  time_t any_time = 0;
+
+  traceEvent(TRACE_INFO, "loading communities");
+  // reset data structures ------------------------------
+
+  // send RE_REGISTER_SUPER to all edges from user/pw auth communites, this is
+  // safe because follow-up REGISTER_SUPER cannot be handled before this
+  // function ends
+  send_re_register_super(&_sn);
+
+  // remove communities (not: federation)
+  HASH_ITER(hh, _sn.communities, comm, tmp_comm) {
+    if (comm->is_federation) {
+      continue;
+    }
+
+    // remove all edges from community
+    HASH_ITER(hh, comm->edges, edge, tmp_edge) {
+      // remove all edge associations (with other supernodes)
+      HASH_ITER(hh, comm->assoc, assoc, tmp_assoc) {
+        HASH_DEL(comm->assoc, assoc);
+        free(assoc);
+      }
+
+      // close TCP connections, if any (also causes reconnect)
+      // and delete edge from list
+      if ((edge->socket_fd != _sn.sock) && (edge->socket_fd >= 0)) {
+        HASH_FIND_INT(_sn.tcp_connections, &(edge->socket_fd), conn);
+        close_tcp_connection(&_sn, conn); /* also deletes the edge */
+      } else {
+        HASH_DEL(comm->edges, edge);
+        free(edge);
+      }
+    }
+
+    // remove allowed users from community
+    HASH_ITER(hh, comm->allowed_users, user, tmp_user) {
+      free(user->shared_secret_ctx);
+      HASH_DEL(comm->allowed_users, user);
+      free(user);
+    }
+
+    // remove community
+    HASH_DEL(_sn.communities, comm);
+    if (NULL != comm->header_encryption_ctx_static) {
+      // remove header encryption keys
+      free(comm->header_encryption_ctx_static);
+      free(comm->header_iv_ctx_static);
+      free(comm->header_encryption_ctx_dynamic);
+      free(comm->header_iv_ctx_dynamic);
+    }
+    free(comm);
+  }
+
+  // remove all regular expressions for allowed communities
+  HASH_ITER(hh, _sn.rules, re, tmp_re) {
+    HASH_DEL(_sn.rules, re);
+    free(re);
+  }
+
+  // prepare reading data -------------------------------
+
+  // new key_time for all communities, requires dynamic keys to be recalculated
+  // (see further below), and  edges to re-register (see above) and ...
+  _sn.dynamic_key_time = time(NULL);
+  // ... federated supernodes to re-register
+  re_register_and_purge_supernodes(&_sn, _sn.federation, &any_time, any_time,
+                                   1 /* forced */);
+  // TODO: `sn_utils.c`  line 309-450
+  // calculate allowed user's shared secrets (shared with federation)
+  calculate_shared_secrets(&_sn);
+
+  // calculcate communties' dynamic keys
+  calculate_dynamic_keys(&_sn);
+
+  // no new communities will be allowed
+  _sn.lock_communities = 1;
 }
 
 void Supernode::stop() {
