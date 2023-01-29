@@ -49,7 +49,7 @@ end:
 void stopServer(const Napi::CallbackInfo &info) { pSn->stop(); }
 
 void loadCommunities(const Napi::CallbackInfo &info) {
-  if (nullptr != pSn) {
+  if (nullptr == pSn) {
     return;
   }
   if (!info[0].IsArray()) {

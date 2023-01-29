@@ -38,6 +38,7 @@ struct CommunityOption {
   CommunityOption() = delete;
   CommunityOption(const Napi::Object &options);
   std::string name;
+  std::string subnet = "";
   std::vector<CommunityUser> users;
 };
 

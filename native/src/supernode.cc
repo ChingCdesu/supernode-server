@@ -1,5 +1,4 @@
 #include "supernode.h"
-#include "sn_utils.h"
 #include <exception>
 
 SupernodeOption::SupernodeOption(const Napi::Object &options) {
@@ -47,6 +46,10 @@ CommunityOption::CommunityOption(const Napi::Object &options) {
     throw std::invalid_argument("\'community.users\' must be \'array\'");
   }
 
+  if (options["subnet"].IsString()) {
+    this->subnet = options["subnet"].As<Napi::String>().Utf8Value();
+  }
+
   this->name = options["name"].As<Napi::String>().Utf8Value();
   const auto users = options["users"].As<Napi::Array>();
   for (auto index = 0; index < users.Length(); ++index) {
@@ -61,14 +64,13 @@ Supernode::Supernode() : Supernode(SupernodeOption()) {}
 
 Supernode::Supernode(const SupernodeOption &options) : _worker() {
   sn_init_defaults(&_sn);
-  traceEvent(TRACE_NORMAL, "config:");
   _sn.daemon = 0;
   _sn.lport = options.port;
-  traceEvent(TRACE_NORMAL, "\tUDP service port: %u", _sn.lport);
+  traceEvent(TRACE_INFO, "\tUDP service port: %u", _sn.lport);
   snprintf(_sn.federation->community, N2N_COMMUNITY_SIZE - 1, "*%s",
            options.federationName.c_str());
   _sn.federation->community[N2N_COMMUNITY_SIZE - 1] = '\0';
-  traceEvent(TRACE_NORMAL, "\tFederation name: %s", _sn.federation->community);
+  traceEvent(TRACE_INFO, "\tFederation name: %s", _sn.federation->community);
   if (!options.federationParent.empty()) {
     n2n_sock_t *socket;
     struct peer_info *anchor_sn;
@@ -121,12 +123,12 @@ Supernode::Supernode(const SupernodeOption &options) : _worker() {
       }
     }
     free(socket);
-    traceEvent(TRACE_NORMAL, "\tFederation parent: %s",
+    traceEvent(TRACE_INFO, "\tFederation parent: %s",
                options.federationParent.c_str());
   }
 
   _sn.override_spoofing_protection = options.disableSpoofingProtection ? 1 : 0;
-  traceEvent(TRACE_NORMAL, "\tDisable spoofing protection: %s",
+  traceEvent(TRACE_INFO, "\tDisable spoofing protection: %s",
              options.disableSpoofingProtection ? "yes" : "no");
   applySubnetRange(options.subnetRange);
 }
@@ -223,7 +225,6 @@ void Supernode::applySubnetRange(const std::string &subnetStr) {
 
 void Supernode::applyCommunities(
     const std::vector<CommunityOption> &communities) {
-  // TODO
   sn_user_t *user, *tmp_user;
   n2n_desc_t username;
 
@@ -235,7 +236,7 @@ void Supernode::applyCommunities(
 
   time_t any_time = 0;
 
-  traceEvent(TRACE_INFO, "loading communities");
+  traceEvent(TRACE_NORMAL, "loading communities");
   // reset data structures ------------------------------
 
   // send RE_REGISTER_SUPER to all edges from user/pw auth communites, this is
@@ -301,7 +302,60 @@ void Supernode::applyCommunities(
   // ... federated supernodes to re-register
   re_register_and_purge_supernodes(&_sn, _sn.federation, &any_time, any_time,
                                    1 /* forced */);
-  // TODO: `sn_utils.c`  line 309-450
+  for (auto it = communities.begin(); it != communities.end(); ++it) {
+    dec_ip_str_t ip_str;
+    uint8_t bitlen;
+    in_addr_t net;
+    uint32_t mask;
+    auto cmn_str = it->name.c_str();
+    auto net_str = it->subnet.c_str();
+    comm = new struct sn_community();
+    comm_init(comm, const_cast<char *>(cmn_str));
+    comm->purgeable = COMMUNITY_UNPURGEABLE;
+    comm->header_encryption = HEADER_ENCRYPTION_UNKNOWN;
+    packet_header_setup_key(
+        comm->community, &comm->header_encryption_ctx_static,
+        &comm->header_encryption_ctx_dynamic, &comm->header_iv_ctx_static,
+        &comm->header_iv_ctx_dynamic);
+    HASH_ADD_STR(_sn.communities, community, comm);
+    traceEvent(TRACE_NORMAL, "added allowed community '%s'",
+               (char *)comm->community);
+    bool has_net = !it->subnet.empty();
+    if (has_net) {
+      // has sub-network address
+      if (sscanf(it->subnet.c_str(), "%15[^/]/%hhu", ip_str, &bitlen) != 2) {
+        traceEvent(TRACE_WARNING,
+                   "bad net/bit format '%s' for community '%c', ignoring; see "
+                   "comments inside community.list file",
+                   net_str, cmn_str);
+        has_net = 0;
+      }
+      net = inet_addr(ip_str);
+      mask = bitlen2mask(bitlen);
+      if ((net == (in_addr_t)(-1)) || (net == INADDR_NONE) ||
+          (net == INADDR_ANY) || ((ntohl(net) & ~mask) != 0)) {
+        traceEvent(TRACE_WARNING,
+                   "bad network '%s/%u' in '%s' for community '%s', ignoring",
+                   ip_str, bitlen, net_str, cmn_str);
+        has_net = 0;
+      }
+      if ((bitlen > 30) || (bitlen == 0)) {
+        traceEvent(TRACE_WARNING,
+                   "bad prefix '%hhu' in '%s' for community '%s', ignoring",
+                   bitlen, net_str, cmn_str);
+        has_net = 0;
+      }
+    }
+    if (has_net) {
+      comm->auto_ip_net.net_addr = ntohl(net);
+      comm->auto_ip_net.net_bitlen = bitlen;
+      traceEvent(TRACE_NORMAL, "assigned sub-network %s/%u to community '%s'",
+                 inet_ntoa(*(struct in_addr *)&net),
+                 comm->auto_ip_net.net_bitlen, comm->community);
+    } else {
+      assign_one_ip_subnet(&_sn, comm);
+    }
+  }
   // calculate allowed user's shared secrets (shared with federation)
   calculate_shared_secrets(&_sn);
 

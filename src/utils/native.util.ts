@@ -22,6 +22,7 @@ export interface CommunityUser {
 
 export interface CommunityOptions {
   name: string;
+  subnet?: string;
   users: CommunityUser[];
 }
 
