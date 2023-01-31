@@ -8,6 +8,6 @@ export class SupernodeController {
 
   @Get()
   async list(): Promise<Community[]> {
-    return await this.supernodeService.getCommunities();
+    return await this.supernodeService.listCommunities();
   }
 }

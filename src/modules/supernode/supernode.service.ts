@@ -5,6 +5,9 @@ import {
   startServer,
   stopServer,
   getCommunities,
+  CommunityOptions,
+  Community,
+  getServerInfo,
 } from '@/utils/native.util';
 import { LoggerProvider } from '@/utils/logger.util';
 
@@ -15,20 +18,21 @@ export class SupernodeService
 {
   onModuleInit() {
     createServer();
-    startServer().then((supernode) => {
+    startServer().then(async () => {
       this.logger.log('supernode instance started');
-      this.logger.log(JSON.stringify(supernode));
-      loadCommunities([
-        {
-          name: 'chingc',
-          users: [
-            {
-              name: 'chingc',
-              publicKey: 'GASuB-sXgjSMv0knpoWV6QAzzGfYSPbtpnBVpQp72NC',
-            },
-          ],
-        },
-      ]);
+
+      const myCommunity: CommunityOptions = {
+        name: 'chingc',
+        users: [
+          {
+            name: 'chingc',
+            publicKey: 'GASuB-sXgjSMv0knpoWV6QAzzGfYSPbtpnBVpQp72NC',
+          },
+        ],
+      };
+      await loadCommunities([myCommunity]);
+      const serverInfo = await getServerInfo();
+      this.logger.log(serverInfo);
     });
   }
 
@@ -36,8 +40,8 @@ export class SupernodeService
     stopServer();
     this.logger.log('supernode instance stopped');
   }
-
-  async getCommunities() {
-    return await getCommunities();
+  
+  public listCommunities(): Promise<Community[]> {
+    return getCommunities();
   }
 }

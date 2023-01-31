@@ -52,10 +52,14 @@ export function stopServer() {
   native.stopServer();
 }
 
-export function loadCommunities(communities: CommunityOptions[]) {
-  native.loadCommunities(communities);
+export function loadCommunities(communities: CommunityOptions[]): Promise<void> {
+  return native.loadCommunities(communities);
 }
 
 export function getCommunities(): Promise<Community[]> {
   return native.getCommunities();
+}
+
+export function getServerInfo(): Promise<Supernode> {
+  return native.getServerInfo();
 }

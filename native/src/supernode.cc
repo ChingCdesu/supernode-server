@@ -138,6 +138,8 @@ Supernode::Supernode(const Napi::Object &options)
 
 Napi::Object Supernode::toObject(Napi::Env env) {
   auto obj = Napi::Object::New(env);
+  dec_ip_bit_str_t start_ip_bit_str = {'\0'}, end_ip_bit_str = {'\0'};
+  char subnetBuffer[50];
   obj.Set("port", _sn.lport);
   obj.Set("startTime", _sn.start_time);
   obj.Set("version", _sn.version);
@@ -147,8 +149,10 @@ Napi::Object Supernode::toObject(Napi::Env env) {
     obj.Set("federationParent", _sn.federation->edges->ip_addr);
   }
   obj.Set("disableSpoofingProtection", (bool)_sn.override_spoofing_protection);
-  // TODO: subnetRange to string
-  // obj.Set("subnetRange", _sn.min_auto_ip_net)
+  sprintf(subnetBuffer, "%s-%s",
+          ip_subnet_to_str(start_ip_bit_str, &_sn.min_auto_ip_net),
+          ip_subnet_to_str(end_ip_bit_str, &_sn.max_auto_ip_net));
+  obj.Set("subnetRange", subnetBuffer);
   return obj;
 }
 
