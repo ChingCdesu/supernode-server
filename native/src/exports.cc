@@ -69,7 +69,7 @@ Napi::Value getCommunities(const Napi::CallbackInfo &info) {
                        .Value());
     goto end;
   }
-  defered.Resolve(info.Env().Undefined());
+  defered.Resolve(pSn->getCommunities(info.Env()));
 end:
   return defered.Promise();
 }

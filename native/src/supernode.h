@@ -56,6 +56,7 @@ public: // operations
   void stop();
   void loadCommunities(const Napi::Array &communities);
   Napi::Object toObject(Napi::Env env);
+  Napi::Array getCommunities(Napi::Env env);
 
 private: // complex apply
   void applySubnetRange(const std::string &subnetStr);

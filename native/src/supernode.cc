@@ -152,6 +152,48 @@ Napi::Object Supernode::toObject(Napi::Env env) {
   return obj;
 }
 
+Napi::Array Supernode::getCommunities(Napi::Env env) {
+  struct sn_community *community, *tmp;
+  struct peer_info *peer, *tmpPeer;
+  macstr_t mac_buf;
+  n2n_sock_str_t sockbuf;
+  dec_ip_bit_str_t ip_bit_str = {'\0'};
+
+  auto arr = Napi::Array::New(env);
+  auto index = 0;
+  HASH_ITER(hh, _sn.communities, community, tmp) {
+    auto commObj = Napi::Object::New(env);
+    auto peersArr = Napi::Array::New(env);
+    auto peersIndex = 0;
+    HASH_ITER(hh, community->edges, peer, tmpPeer) {
+      auto peerObj = Napi::Object::New(env);
+      peerObj.Set("name", reinterpret_cast<const char *>(peer->dev_desc));
+      if (peer->dev_addr.net_addr != 0) {
+        peerObj.Set("ip", ip_subnet_to_str(ip_bit_str, &peer->dev_addr));
+      }
+      if (!is_null_mac(peer->mac_addr)) {
+        peerObj.Set("mac", macaddr_str(mac_buf, peer->mac_addr));
+      }
+      peerObj.Set("protocol",
+                  ((peer->socket_fd >= 0) && (peer->socket_fd != _sn.sock))
+                      ? "TCP"
+                      : "UDP");
+      peerObj.Set("lastSeen", peer->last_seen);
+      peerObj.Set("uptime", peer->uptime);
+      peerObj.Set("clientVersion", peer->version);
+      peersArr.Set(peersIndex++, peerObj);
+    }
+    commObj.Set("peers", peersArr);
+    commObj.Set("name", community->community);
+    if (community->auto_ip_net.net_addr != 0) {
+      commObj.Set("subnet",
+                  ip_subnet_to_str(ip_bit_str, &community->auto_ip_net));
+    }
+    arr.Set(index++, commObj);
+  }
+  return arr;
+}
+
 void Supernode::start() {
   _sn.sock = open_socket(_sn.lport, INADDR_ANY, 0 /* UDP */);
   if (-1 == _sn.sock) {
@@ -226,7 +268,8 @@ void Supernode::applySubnetRange(const std::string &subnetStr) {
 void Supernode::applyCommunities(
     const std::vector<CommunityOption> &communities) {
   sn_user_t *user, *tmp_user;
-  n2n_desc_t username;
+  n2n_private_public_key_t public_key;
+  char ascii_public_key[(N2N_PRIVATE_PUBLIC_KEY_SIZE * 8 + 5) / 6 + 1];
 
   struct sn_community *comm, *tmp_comm;
   struct peer_info *edge, *tmp_edge;
@@ -354,6 +397,22 @@ void Supernode::applyCommunities(
                  comm->auto_ip_net.net_bitlen, comm->community);
     } else {
       assign_one_ip_subnet(&_sn, comm);
+    }
+    for (auto uit = it->users.begin(); uit != it->users.end(); ++uit) {
+      user = (sn_user_t *)calloc(1, sizeof(sn_user_t));
+      memcpy(user->name, uit->name.c_str(), sizeof(user->name));
+      ascii_to_bin(public_key, const_cast<char *>(uit->publicKey.c_str()));
+      memcpy(user->public_key, public_key, sizeof(public_key));
+      HASH_ADD(hh, comm->allowed_users, public_key,
+               sizeof(n2n_private_public_key_t), user);
+      traceEvent(TRACE_NORMAL,
+                 "added user '%s' with public key '%s' to community '%s'",
+                 user->name, uit->publicKey.c_str(), comm->community);
+      comm->header_encryption = HEADER_ENCRYPTION_ENABLED;
+      packet_header_setup_key(
+          comm->community, &(comm->header_encryption_ctx_static),
+          &(comm->header_encryption_ctx_dynamic), &(comm->header_iv_ctx_static),
+          &(comm->header_iv_ctx_dynamic));
     }
   }
   // calculate allowed user's shared secrets (shared with federation)

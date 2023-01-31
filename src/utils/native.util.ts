@@ -17,7 +17,7 @@ export interface Supernode extends SupernodeOptions {
 
 export interface CommunityUser {
   name: string;
-  public_key: string;
+  publicKey: string;
 }
 
 export interface CommunityOptions {
@@ -28,12 +28,11 @@ export interface CommunityOptions {
 
 export interface CommunityPeer {
   name: string;
-  mac: string;
-  ip: string;
+  mac?: string;
+  ip?: string;
+  protocol: 'TCP' | 'UDP';
   uptime: number;
   lastSeen: number;
-  lastP2P: number;
-  lastSentQuery: number;
   clientVersion: string;
 }
 

@@ -4,6 +4,7 @@ import {
   loadCommunities,
   startServer,
   stopServer,
+  getCommunities,
 } from '@/utils/native.util';
 import { LoggerProvider } from '@/utils/logger.util';
 
@@ -20,7 +21,12 @@ export class SupernodeService
       loadCommunities([
         {
           name: 'chingc',
-          users: [],
+          users: [
+            {
+              name: 'chingc',
+              publicKey: 'GASuB-sXgjSMv0knpoWV6QAzzGfYSPbtpnBVpQp72NC',
+            },
+          ],
         },
       ]);
     });
@@ -29,5 +35,9 @@ export class SupernodeService
   onModuleDestroy() {
     stopServer();
     this.logger.log('supernode instance stopped');
+  }
+
+  async getCommunities() {
+    return await getCommunities();
   }
 }
