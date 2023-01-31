@@ -40,7 +40,7 @@ export class SupernodeService
     stopServer();
     this.logger.log('supernode instance stopped');
   }
-  
+
   public listCommunities(): Promise<Community[]> {
     return getCommunities();
   }
