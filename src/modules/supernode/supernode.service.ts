@@ -17,10 +17,12 @@ export class SupernodeService
   implements OnModuleInit, OnModuleDestroy
 {
   onModuleInit() {
+    // 创建supernode服务器
     createServer();
+    // 启动supernode服务器
     startServer().then(async () => {
       this.logger.log('supernode instance started');
-
+      // TODO: 从数据库中读取配置
       const myCommunity: CommunityOptions = {
         name: 'chingc',
         users: [
@@ -30,9 +32,14 @@ export class SupernodeService
           },
         ],
       };
+      // 加载配置
       await loadCommunities([myCommunity]);
+      // 获取服务器基本信息
       const serverInfo = await getServerInfo();
       this.logger.log(serverInfo);
+      // 获取用户社区的基本信息
+      const communitiesInfo = await getCommunities();
+      this.logger.log(communitiesInfo);
     });
   }
 
