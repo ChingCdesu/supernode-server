@@ -40,6 +40,7 @@ struct CommunityOption {
   std::string name;
   std::string subnet = "";
   std::vector<CommunityUser> users;
+  bool encryption = false;
 };
 
 class Supernode {

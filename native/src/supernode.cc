@@ -49,6 +49,9 @@ CommunityOption::CommunityOption(const Napi::Object &options) {
   if (options["subnet"].IsString()) {
     this->subnet = options["subnet"].As<Napi::String>().Utf8Value();
   }
+  if (options["encryption"].IsBoolean()) {
+    this->encryption = options["encryption"].As<Napi::Boolean>().Value();
+  }
 
   this->name = options["name"].As<Napi::String>().Utf8Value();
   const auto users = options["users"].As<Napi::Array>();
@@ -71,6 +74,11 @@ Supernode::Supernode(const SupernodeOption &options) : _worker() {
            options.federationName.c_str());
   _sn.federation->community[N2N_COMMUNITY_SIZE - 1] = '\0';
   traceEvent(TRACE_INFO, "\tFederation name: %s", _sn.federation->community);
+  if (!strcmp(_sn.federation->community, FEDERATION_NAME)) {
+    traceEvent(TRACE_WARNING,
+               "using default federation name; FOR TESTING ONLY, usage of a "
+               "custom federation name is highly recommended!");
+  }
   if (!options.federationParent.empty()) {
     n2n_sock_t *socket;
     struct peer_info *anchor_sn;
@@ -130,6 +138,12 @@ Supernode::Supernode(const SupernodeOption &options) : _worker() {
   _sn.override_spoofing_protection = options.disableSpoofingProtection ? 1 : 0;
   traceEvent(TRACE_INFO, "\tDisable spoofing protection: %s",
              options.disableSpoofingProtection ? "yes" : "no");
+  if (_sn.override_spoofing_protection) {
+    traceEvent(
+        TRACE_WARNING,
+        "disabled MAC and IP address spoofing protection; FOR TESTING "
+        "ONLY, usage of user-password authentication recommended instead!");
+  }
   applySubnetRange(options.subnetRange);
 }
 
@@ -140,13 +154,26 @@ Napi::Object Supernode::toObject(Napi::Env env) {
   auto obj = Napi::Object::New(env);
   dec_ip_bit_str_t start_ip_bit_str = {'\0'}, end_ip_bit_str = {'\0'};
   char subnetBuffer[50];
+  /* -------------- supernode federation key part -------------- */
+  n2n_private_public_key_t prv; /* 32 bytes private key */
+  n2n_private_public_key_t bin; /* 32 bytes public key binary output buffer */
+  char asc[44]; /* 43 bytes + 0-terminator ascii string output */
+
   obj.Set("port", _sn.lport);
   obj.Set("startTime", _sn.start_time);
   obj.Set("version", _sn.version);
   obj.Set("communityCount", HASH_COUNT(_sn.communities));
-  obj.Set("federationName", _sn.federation->community);
   if (_sn.federation->edges) {
     obj.Set("federationParent", _sn.federation->edges->ip_addr);
+  }
+  if (strcmp(_sn.federation->community, FEDERATION_NAME)) {
+    auto federationName = _sn.federation->community + 1; /* skip '*' symbol */
+    obj.Set("federationName", federationName);
+    generate_private_key(prv, federationName);
+    generate_public_key(bin, prv);
+    memset(prv, 0, sizeof(prv));
+    bin_to_ascii(asc, bin, sizeof(bin));
+    obj.Set("publicKey", asc);
   }
   obj.Set("disableSpoofingProtection", (bool)_sn.override_spoofing_protection);
   sprintf(subnetBuffer, "%s-%s",
@@ -186,8 +213,6 @@ Napi::Array Supernode::getCommunities(Napi::Env env) {
                       ? "TCP"
                       : "UDP");
       peerObj.Set("lastSeen", peer->last_seen);
-      peerObj.Set("uptime", peer->uptime);
-      peerObj.Set("clientVersion", peer->version);
       peersArr.Set(peersIndex++, peerObj);
     }
     commObj.Set("peers", peersArr);
@@ -196,7 +221,8 @@ Napi::Array Supernode::getCommunities(Napi::Env env) {
     HASH_ITER(hh, community->allowed_users, user, tmpUser) {
       auto userObj = Napi::Object::New(env);
       userObj.Set("name", reinterpret_cast<char *>(user->name));
-      bin_to_ascii(ascii_public_key, user->public_key, sizeof(user->public_key));
+      bin_to_ascii(ascii_public_key, user->public_key,
+                   sizeof(user->public_key));
       userObj.Set("publicKey", ascii_public_key);
       usersArr.Set(usersIndex++, userObj);
     }
@@ -430,6 +456,9 @@ void Supernode::applyCommunities(
           comm->community, &(comm->header_encryption_ctx_static),
           &(comm->header_encryption_ctx_dynamic), &(comm->header_iv_ctx_static),
           &(comm->header_iv_ctx_dynamic));
+    }
+    if (comm->header_encryption == HEADER_ENCRYPTION_UNKNOWN) {
+      comm->header_encryption = it->encryption ? HEADER_ENCRYPTION_ENABLED : HEADER_ENCRYPTION_NONE;
     }
   }
   // calculate allowed user's shared secrets (shared with federation)

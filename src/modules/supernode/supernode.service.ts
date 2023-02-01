@@ -18,7 +18,9 @@ export class SupernodeService
 {
   onModuleInit() {
     // 创建supernode服务器
-    createServer();
+    createServer({
+      federationName: 'secret',
+    });
     // 启动supernode服务器
     startServer().then(async () => {
       this.logger.log('supernode instance started');
