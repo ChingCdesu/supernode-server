@@ -159,14 +159,17 @@ Napi::Object Supernode::toObject(Napi::Env env) {
 Napi::Array Supernode::getCommunities(Napi::Env env) {
   struct sn_community *community, *tmp;
   struct peer_info *peer, *tmpPeer;
+  sn_user_t *user, *tmpUser;
   macstr_t mac_buf;
   n2n_sock_str_t sockbuf;
   dec_ip_bit_str_t ip_bit_str = {'\0'};
+  char ascii_public_key[(N2N_PRIVATE_PUBLIC_KEY_SIZE * 8 + 5) / 6 + 1];
 
   auto arr = Napi::Array::New(env);
   auto index = 0;
   HASH_ITER(hh, _sn.communities, community, tmp) {
     auto commObj = Napi::Object::New(env);
+    // load peers
     auto peersArr = Napi::Array::New(env);
     auto peersIndex = 0;
     HASH_ITER(hh, community->edges, peer, tmpPeer) {
@@ -188,6 +191,16 @@ Napi::Array Supernode::getCommunities(Napi::Env env) {
       peersArr.Set(peersIndex++, peerObj);
     }
     commObj.Set("peers", peersArr);
+    auto usersArr = Napi::Array::New(env);
+    auto usersIndex = 0;
+    HASH_ITER(hh, community->allowed_users, user, tmpUser) {
+      auto userObj = Napi::Object::New(env);
+      userObj.Set("name", reinterpret_cast<char *>(user->name));
+      bin_to_ascii(ascii_public_key, user->public_key, sizeof(user->public_key));
+      userObj.Set("publicKey", ascii_public_key);
+      usersArr.Set(usersIndex++, userObj);
+    }
+    commObj.Set("users", usersArr);
     commObj.Set("name", community->community);
     if (community->auto_ip_net.net_addr != 0) {
       commObj.Set("subnet",

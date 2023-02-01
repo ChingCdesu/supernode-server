@@ -38,6 +38,7 @@ export interface CommunityPeer {
 
 export interface Community extends CommunityOptions {
   peers: CommunityPeer[];
+  users: CommunityUser[];
 }
 
 export function createServer(options?: Partial<SupernodeOptions>) {
