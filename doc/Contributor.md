@@ -38,19 +38,30 @@
 
   ```json
   {
+      "env": {
+          "HOME": "C:/Users/_chingc"
+      },
       "configurations": [
           {
-              "name": "macOS",
+              "name": "Win32",
               "includePath": [
                   "${workspaceFolder}/**",
-                  "${workspaceFolder}/native/thirdparty/n2n/include",
-                  "${HOME}/.cmake-js/node-x64/v18.13.0/include/node"
+                  "${env.HOME}/.cmake-js/node-x64/v19.5.0/include/node" // 如果vscode提示node_api.h找不到需要添加这行，其中node版本和env中的HOME根据自己电脑配置修改
               ],
-              "defines": ["CMAKE_BUILD"],
-              "compilerPath": "/usr/bin/clang",
+              "defines": [
+                  // Windows需要额外添加以下四个宏定义
+                  "UNICODE",
+                  "_UNICODE",
+                  "WIN32",
+                  "_WIN32",
+                	// 所有操作系统都要添加这个宏定义
+                  "CMAKE_BUILD"
+              ],
+              "windowsSdkVersion": "10.0.22000.0", // 根据你自己的windowsSdkVersion填入
+              "compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.34.31933/bin/Hostx64/x64/cl.exe",
               "cStandard": "c17",
               "cppStandard": "c++17",
-              "intelliSenseMode": "macos-clang-x64"
+              "intelliSenseMode": "windows-msvc-x64"
           }
       ],
       "version": 4
