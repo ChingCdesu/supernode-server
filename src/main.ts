@@ -1,9 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from '@/app.module';
+import { VersioningType } from '@nestjs/common';
+import { LogLevels } from '@/utils/logger.util';
+import { useConfig } from '@/utils/config.util';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const config = useConfig();
+  const app = await NestFactory.create(AppModule, {
+    logger: LogLevels.slice(0, config.app.logLevel),
+  });
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
 
   const swaggerBuilder = new DocumentBuilder()
     .setTitle('Supernode server')

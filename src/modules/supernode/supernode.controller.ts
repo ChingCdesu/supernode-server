@@ -2,8 +2,11 @@ import { Community } from '@/utils/native.util';
 import { Controller, Get } from '@nestjs/common';
 import { SupernodeService } from './supernode.service';
 
-@Controller('supernodes')
-export class SupernodeController {
+@Controller({
+  path: 'supernode',
+  version: '1',
+})
+export class SupernodeControllerV1 {
   constructor(private supernodeService: SupernodeService) {}
 
   @Get()
