@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { DeepPartial } from '@/utils/type.util';
 import { LogLevel } from '@/utils/logger.util';
 import type { DatabaseType } from 'typeorm';
+import _ from 'lodash';
 
 export interface Config {
   app: AppConfig;
@@ -49,13 +50,33 @@ const defaultConfig: Config = {
     redirectUrl: '',
   },
   dataSource: {
-    type: 'mysql',
-    host: 'localhost',
-    port: 3306,
-    username: 'root',
-    password: 'root',
-    database: 'supernode',
+    type: 'sqlite',
+    host: '',
+    port: 0,
+    username: '',
+    password: '',
+    database: 'data.db',
   },
+};
+
+const envConfigMap: Record<string, string> = {
+  APP_LOG_LEVEL: 'app.logLevel',
+
+  OIDC_ENABLED: 'oidc.enabled',
+  OIDC_NAME: 'oidc.name',
+  OIDC_AUTO_DISCOVER_URL: 'oidc.autoDiscoverUrl',
+  OIDC_CLIENT_ID: 'oidc.clientId',
+  OIDC_CLIENT_SECRET: 'oidc.clientSecret',
+  OIDC_SCOPES: 'oidc.scopes',
+  OIDC_REDIRECT_URL: 'oidc.redirectUrl',
+
+  DATA_SOURCE_TYPE: 'dataSource.type',
+  DATA_SOURCE_HOST: 'dataSource.host',
+  DATA_SOURCE_PORT: 'dataSource.port',
+  DATA_SOURCE_USERNAME: 'dataSource.username',
+  DATA_SOURCE_PASSWORD: 'dataSource.password',
+  DATA_SOURCE_DATABASE: 'dataSource.database',
+  DATA_SOURCE_SCHEMA: 'dataSource.schema',
 };
 
 let computedConfig: Config | undefined = undefined;
@@ -80,10 +101,9 @@ function parseConfigFromFile(filepath: string): DeepPartial<Config> {
 function parseConfigFromEnv(): DeepPartial<Config> {
   const parsed: DeepPartial<Config> = {};
   for (const [key, value] of Object.entries(process.env)) {
-    switch (key) {
-      // TODO: parse envs
-      default:
-        break;
+    if (key in envConfigMap) {
+      const path = envConfigMap[key];
+      _.set(parsed, path, value);
     }
   }
   return parsed;

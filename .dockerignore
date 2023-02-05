@@ -45,3 +45,7 @@ lerna-debug.log*
 
 # local env files
 *.local
+
+# dev files
+*.db
+*.sqlite
