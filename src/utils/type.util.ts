@@ -1,1 +1,1 @@
-export { DeepPartial } from 'typeorm';
+export type { PartialDeep } from 'type-fest';

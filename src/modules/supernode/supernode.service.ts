@@ -1,4 +1,5 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
 import {
   createServer,
   loadCommunities,
@@ -10,12 +11,19 @@ import {
   getServerInfo,
 } from '@/utils/native.util';
 import { LoggerProvider } from '@/utils/logger.util';
-
+import { Community as CommunityModal } from './community.entity';
 @Injectable()
 export class SupernodeService
   extends LoggerProvider
   implements OnModuleInit, OnModuleDestroy
 {
+  constructor(
+    @InjectModel(CommunityModal)
+    private communityModal: typeof CommunityModal,
+  ) {
+    super();
+  }
+
   onModuleInit() {
     // 创建supernode服务器
     createServer({
@@ -24,7 +32,6 @@ export class SupernodeService
     // 启动supernode服务器
     startServer().then(async () => {
       this.logger.log('supernode instance started');
-      // TODO: 从数据库中读取配置
       const myCommunity: CommunityOptions = {
         name: 'chingc',
         users: [
@@ -34,6 +41,11 @@ export class SupernodeService
           },
         ],
       };
+
+      // TODO: 从数据库中读取配置
+      // const communities = await this.communityModal.findAll();
+      // this.logger.log(communities);
+
       // 加载配置
       await loadCommunities([myCommunity]);
       // 获取服务器基本信息

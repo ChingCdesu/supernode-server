@@ -12,8 +12,8 @@
        */
       "type": "lldb",
       "request": "launch",
-      "name": "Debug",
-      "program": "/usr/local/bin/node",
+      "name": "Debug Node addon (C++)",
+      "program": "node",
       "args": ["dist/main.js"],
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "npm: build:debug"

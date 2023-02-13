@@ -1,16 +1,23 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { Logger, Module } from '@nestjs/common';
+import { SequelizeModule } from '@nestjs/sequelize';
 import { useConfig } from '@/utils/config.util';
 
 const config = useConfig();
+const logger = new Logger('Database');
 @Module({
   imports: [
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    TypeOrmModule.forRoot({
+    SequelizeModule.forRoot({
       ...config.dataSource,
-      autoLoadEntities: true,
+      autoLoadModels: true,
       synchronize: true,
+      logQueryParameters: true,
+      benchmark: true,
+      hooks: {
+        // beforeSync: (options) => {},
+      },
+      logging: (sql, time) => {
+        logger.debug(`SQL: "${sql}" executed in ${time}ms`);
+      },
     }),
   ],
 })
