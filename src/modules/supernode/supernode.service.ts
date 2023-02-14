@@ -6,12 +6,11 @@ import {
   startServer,
   stopServer,
   getCommunities,
-  CommunityOptions,
-  Community,
-  getServerInfo,
+  Community as NativeCommunity,
 } from '@/utils/native.util';
 import { LoggerProvider } from '@/utils/logger.util';
 import { Community as CommunityModal } from './community.entity';
+import { useConfig } from '@/utils/config.util';
 @Injectable()
 export class SupernodeService
   extends LoggerProvider
@@ -19,12 +18,13 @@ export class SupernodeService
 {
   constructor(
     @InjectModel(CommunityModal)
-    private communityModal: typeof CommunityModal,
+    private _communityModal: typeof CommunityModal,
   ) {
     super();
   }
 
   onModuleInit() {
+    const config = useConfig();
     // 创建supernode服务器
     createServer({
       federationName: 'secret',
@@ -32,28 +32,7 @@ export class SupernodeService
     // 启动supernode服务器
     startServer().then(async () => {
       this.logger.log('supernode instance started');
-      const myCommunity: CommunityOptions = {
-        name: 'chingc',
-        users: [
-          {
-            name: 'chingc',
-            publicKey: 'GASuB-sXgjSMv0knpoWV6QAzzGfYSPbtpnBVpQp72NC',
-          },
-        ],
-      };
-
-      // TODO: 从数据库中读取配置
-      // const communities = await this.communityModal.findAll();
-      // this.logger.log(communities);
-
-      // 加载配置
-      await loadCommunities([myCommunity]);
-      // 获取服务器基本信息
-      const serverInfo = await getServerInfo();
-      this.logger.log(serverInfo);
-      // 获取用户社区的基本信息
-      const communitiesInfo = await getCommunities();
-      this.logger.log(communitiesInfo);
+      await this._syncCommunities();
     });
   }
 
@@ -62,7 +41,13 @@ export class SupernodeService
     this.logger.log('supernode instance stopped');
   }
 
-  public listCommunities(): Promise<Community[]> {
+  public listCommunities(): Promise<NativeCommunity[]> {
     return getCommunities();
+  }
+
+  private async _syncCommunities(): Promise<void> {
+    const communities = await this._communityModal.findAll();
+    await loadCommunities(communities);
+    this.logger.log('communities loaded');
   }
 }
