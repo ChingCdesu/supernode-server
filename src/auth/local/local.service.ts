@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { UserService } from '@/modules/user/user.service';
 import { User as UserModel } from '@/modules/user/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
+import { AuthResponseDto } from '@/modules/user/dto/auth-response.dto';
 
 @Injectable()
 export class LocalAuthService {
@@ -18,10 +19,10 @@ export class LocalAuthService {
     return await this._userService.validate(username, pass);
   }
 
-  async login(user: UserModel) {
+  async login(user: UserModel): Promise<AuthResponseDto> {
     const payload = { sub: user.id };
-    return {
-      access_token: this._jwtService.sign(payload),
-    };
+    return Object.assign(user, {
+      access_token: this._jwtService.sign(payload, { secret: 'secret' }),
+    });
   }
 }

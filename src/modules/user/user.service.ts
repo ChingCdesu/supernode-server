@@ -81,7 +81,7 @@ export class UserService extends LoggerProvider {
       where: {
         [Op.and]: [
           { password },
-          { [Op.or]: [{ username }, { email: username }] },
+          { [Op.or]: [{ name: username }, { email: username }] },
         ],
       },
     });
