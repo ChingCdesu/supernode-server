@@ -1,4 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
+import { isNull } from 'lodash';
 
 import { LoggerProvider } from '@/utils/logger.util';
 import {
@@ -6,15 +8,19 @@ import {
   PaginationMeta,
   PaginationOptions,
 } from '@/utils/pagination.util';
-import { CreateUserDto, UpdateUserDto, User as UserModel } from './user.entity';
-import { InjectModel } from '@nestjs/sequelize';
-import { isNull } from 'lodash';
+import { AuditService } from '@/modules/audit/audit.service';
+
+import { User as UserModel } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class UserService extends LoggerProvider {
   constructor(
     @InjectModel(UserModel)
-    private _userModel: typeof UserModel,
+    private readonly _userModel: typeof UserModel,
+    private readonly _auditService: AuditService,
   ) {
     super();
   }
@@ -23,7 +29,7 @@ export class UserService extends LoggerProvider {
     paginationOptions: PaginationOptions,
   ): Promise<Pagination<UserModel>> {
     const result = await this._userModel.findAndCountAll({
-      order: ['createdAt', paginationOptions.order],
+      order: [['createdAt', paginationOptions.order]],
       offset: paginationOptions.offset,
       limit: paginationOptions.limit,
     });
@@ -63,6 +69,20 @@ export class UserService extends LoggerProvider {
     await this._userModel.destroy({
       where: {
         id: userId,
+      },
+    });
+  }
+
+  public async validate(
+    username: string,
+    password: string,
+  ): Promise<UserModel | null> {
+    return await this._userModel.findOne({
+      where: {
+        [Op.and]: [
+          { password },
+          { [Op.or]: [{ username }, { email: username }] },
+        ],
       },
     });
   }

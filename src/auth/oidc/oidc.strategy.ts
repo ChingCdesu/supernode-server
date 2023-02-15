@@ -23,7 +23,7 @@ export const buildOpenIdClient = async () => {
 export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
   client: Client;
 
-  constructor(private readonly oidcService: OidcService, client: Client) {
+  constructor(private readonly _oidcService: OidcService, client: Client) {
     const config = useConfig();
     super({
       client: client,

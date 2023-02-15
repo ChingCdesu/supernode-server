@@ -69,6 +69,7 @@ Supernode::Supernode(const SupernodeOption &options) : _worker() {
   sn_init_defaults(&_sn);
   _sn.daemon = 0;
   _sn.lport = options.port;
+  setTraceLevel(1); // TRACE_WARNING & TRACE_ERROR
   traceEvent(TRACE_INFO, "\tUDP service port: %u", _sn.lport);
   snprintf(_sn.federation->community, N2N_COMMUNITY_SIZE - 1, "*%s",
            options.federationName.c_str());
@@ -300,7 +301,7 @@ void Supernode::applySubnetRange(const std::string &subnetStr) {
     return;
   }
 
-  traceEvent(TRACE_NORMAL, "Subnet Range: %s", subnetStr.c_str());
+  traceEvent(TRACE_INFO, "Subnet Range: %s", subnetStr.c_str());
 
   _sn.min_auto_ip_net.net_addr = ntohl(net_min);
   _sn.min_auto_ip_net.net_bitlen = bitlen;
@@ -322,7 +323,7 @@ void Supernode::applyCommunities(
 
   time_t any_time = 0;
 
-  traceEvent(TRACE_NORMAL, "loading communities");
+  traceEvent(TRACE_INFO, "loading communities");
   // reset data structures ------------------------------
 
   // send RE_REGISTER_SUPER to all edges from user/pw auth communites, this is

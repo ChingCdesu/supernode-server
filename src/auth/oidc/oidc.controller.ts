@@ -3,5 +3,5 @@ import { OidcService } from './oidc.service';
 
 @Controller('oidc')
 export class OidcController {
-  constructor(private oidcService: OidcService) {}
+  constructor(private readonly _oidcService: OidcService) {}
 }
