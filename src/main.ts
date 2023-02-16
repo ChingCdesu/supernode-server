@@ -1,9 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AppModule } from '@/app.module';
 import { VersioningType } from '@nestjs/common';
+import * as session from 'express-session';
+import * as passport from 'passport';
+
 import { LogLevels } from '@/utils/logger.util';
 import { useConfig } from '@/utils/config.util';
+
+import { AppModule } from '@/app.module';
 
 async function bootstrap() {
   const config = useConfig();
@@ -21,6 +25,22 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, swaggerBuilder);
   SwaggerModule.setup('api', app, document);
+
+  app.use(
+    session({
+      secret: 'secret', // to sign session id
+      resave: false, // will default to false in near future: https://github.com/expressjs/session#resave
+      saveUninitialized: false, // will default to false in near future: https://github.com/expressjs/session#saveuninitialized
+      rolling: true, // keep session alive
+      cookie: {
+        maxAge: 30 * 60 * 1000, // session expires in 1hr, refreshed by `rolling: true` option.
+        httpOnly: true, // so that cookie can't be accessed via client-side script
+      },
+    }),
+  );
+  app.use(passport.initialize());
+  app.use(passport.session());
+
   await app.listen(3000);
 }
 bootstrap();

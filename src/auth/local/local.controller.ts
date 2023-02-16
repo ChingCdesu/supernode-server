@@ -5,15 +5,13 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LocalAuthService } from './local.service';
 
 @ApiTags('Auth')
-@Controller({
-  path: 'auth',
-})
+@Controller()
 export class LocalAuthController {
   constructor(private readonly _authService: LocalAuthService) {}
 
-  @ApiOperation({ summary: '登录' })
+  @ApiOperation({ summary: '本地登录' })
   @UseGuards(LocalAuthGuard)
-  @Post('login')
+  @Post('auth/login')
   async login(@Body() user: UserModel) {
     return this._authService.login(user);
   }

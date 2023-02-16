@@ -21,9 +21,11 @@ export interface OidcConfig {
   enabled: boolean;
   name: string;
   autoDiscoverUrl: string;
+  // authorizationUrl: string;
+  // tokenUrl: string;
   clientId: string;
   clientSecret: string;
-  scopes: string;
+  scope: string;
   redirectUrl: string;
 }
 
@@ -46,9 +48,11 @@ const defaultConfig: Config = {
     enabled: false,
     name: '',
     autoDiscoverUrl: '',
+    // authorizationUrl: '',
+    // tokenUrl: '',
     clientId: '',
     clientSecret: '',
-    scopes: '',
+    scope: '',
     redirectUrl: '',
   },
   dataSource: {
@@ -68,9 +72,11 @@ const envConfigMap: Record<string, string> = {
   OIDC_ENABLED: 'oidc.enabled',
   OIDC_NAME: 'oidc.name',
   OIDC_AUTO_DISCOVER_URL: 'oidc.autoDiscoverUrl',
+  // OIDC_AUTHORIZATION_URL: 'oidc.authorizationUrl',
+  // OIDC_TOKEN_URL: 'oidc.tokenUrl',
   OIDC_CLIENT_ID: 'oidc.clientId',
   OIDC_CLIENT_SECRET: 'oidc.clientSecret',
-  OIDC_SCOPES: 'oidc.scopes',
+  OIDC_SCOPE: 'oidc.scope',
   OIDC_REDIRECT_URL: 'oidc.redirectUrl',
 
   DATA_SOURCE_DIALECT: 'dataSource.dialect',

@@ -29,7 +29,7 @@ export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
       client: client,
       params: {
         redirect_uri: config.oidc.redirectUrl,
-        scope: config.oidc.scopes,
+        scope: config.oidc.scope,
       },
       passReqToCallback: false,
       usePKCE: false,
