@@ -1,59 +1,78 @@
 <mxfile host="65bd71144e">
     <diagram id="56gqLJaiQ2s4-1sYucTW" name="第 1 页">
-        <mxGraphModel dx="1725" dy="620" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="1468" dy="313" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="14" value="" style="group" vertex="1" connectable="0" parent="1">
-                    <mxGeometry x="-810" y="80" width="640" height="290" as="geometry"/>
+                <mxCell id="14" value="" style="group" parent="1" vertex="1" connectable="0">
+                    <mxGeometry x="-810" y="70" width="640" height="290" as="geometry"/>
                 </mxCell>
-                <mxCell id="2" value="supernode server-1" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="14">
+                <mxCell id="2" value="supernode server-1" style="rounded=1;whiteSpace=wrap;html=1;" parent="14" vertex="1">
                     <mxGeometry y="60" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="3" value="supernode server-2" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="14">
+                <mxCell id="3" value="supernode server-2" style="rounded=1;whiteSpace=wrap;html=1;" parent="14" vertex="1">
                     <mxGeometry y="220" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="4" value="supernode联盟" style="edgeStyle=none;html=1;shape=link;" edge="1" parent="14" source="2" target="3">
+                <mxCell id="4" value="supernode联盟" style="edgeStyle=none;html=1;shape=link;" parent="14" source="2" target="3" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="5" value="&lt;h1 dir=&quot;auto&quot; style=&quot;box-sizing: border-box ; margin-right: 0px ; margin-bottom: 16px ; margin-left: 0px ; line-height: 1.25 ; padding-bottom: 0.3em ; border-bottom: 1px solid ; color: rgb(36 , 41 , 47) ; font-family: , &amp;#34;system-ui&amp;#34; , &amp;#34;segoe ui&amp;#34; , &amp;#34;noto sans&amp;#34; , &amp;#34;helvetica&amp;#34; , &amp;#34;arial&amp;#34; , sans-serif , &amp;#34;apple color emoji&amp;#34; , &amp;#34;segoe ui emoji&amp;#34; ; margin-top: 0px&quot;&gt;&lt;br&gt;&lt;/h1&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="4">
+                <mxCell id="5" value="&lt;h1 dir=&quot;auto&quot; style=&quot;box-sizing: border-box ; margin-right: 0px ; margin-bottom: 16px ; margin-left: 0px ; line-height: 1.25 ; padding-bottom: 0.3em ; border-bottom: 1px solid ; color: rgb(36 , 41 , 47) ; font-family: , &amp;#34;system-ui&amp;#34; , &amp;#34;segoe ui&amp;#34; , &amp;#34;noto sans&amp;#34; , &amp;#34;helvetica&amp;#34; , &amp;#34;arial&amp;#34; , sans-serif , &amp;#34;apple color emoji&amp;#34; , &amp;#34;segoe ui emoji&amp;#34; ; margin-top: 0px&quot;&gt;&lt;br&gt;&lt;/h1&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="4" vertex="1" connectable="0">
                     <mxGeometry x="-0.14" y="1" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="7" value="edge client 1" style="ellipse;whiteSpace=wrap;html=1;labelBackgroundColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;fillColor=none;gradientColor=none;" vertex="1" parent="14">
+                <mxCell id="21" value="ping√" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="14" source="7" target="9" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;curved=1;" edge="1" parent="14" source="7" target="10">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="320" y="68"/>
+                            <mxPoint x="320" y="250"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="24" value="ping√" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="23">
+                    <mxGeometry x="-0.1843" y="3" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="7" value="edge client 1" style="ellipse;whiteSpace=wrap;html=1;labelBackgroundColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;fillColor=none;gradientColor=none;" parent="14" vertex="1">
                     <mxGeometry x="180" width="120" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="8" value="" style="edgeStyle=none;shape=link;html=1;fontFamily=Helvetica;fontSize=11;fontColor=default;" edge="1" parent="14" source="2" target="7">
+                <mxCell id="8" value="" style="edgeStyle=none;shape=link;html=1;fontFamily=Helvetica;fontSize=11;fontColor=default;" parent="14" source="2" target="7" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="9" value="edge client 2" style="ellipse;whiteSpace=wrap;html=1;labelBackgroundColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;fillColor=none;gradientColor=none;" vertex="1" parent="14">
-                    <mxGeometry x="180" y="90" width="120" height="80" as="geometry"/>
-                </mxCell>
-                <mxCell id="11" value="" style="edgeStyle=none;shape=link;html=1;fontFamily=Helvetica;fontSize=11;fontColor=default;" edge="1" parent="14" source="2" target="9">
+                <mxCell id="22" value="ping√" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="14" source="9" target="10" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="10" value="edge client 3" style="ellipse;whiteSpace=wrap;html=1;labelBackgroundColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;fillColor=none;gradientColor=none;" vertex="1" parent="14">
+                <mxCell id="9" value="edge client 2" style="ellipse;whiteSpace=wrap;html=1;labelBackgroundColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;fillColor=none;gradientColor=none;" parent="14" vertex="1">
+                    <mxGeometry x="180" y="105" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="" style="edgeStyle=none;shape=link;html=1;fontFamily=Helvetica;fontSize=11;fontColor=default;" parent="14" source="2" target="9" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="edge client 3" style="ellipse;whiteSpace=wrap;html=1;labelBackgroundColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;fillColor=none;gradientColor=none;" parent="14" vertex="1">
                     <mxGeometry x="180" y="210" width="120" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="12" value="" style="edgeStyle=none;shape=link;html=1;fontFamily=Helvetica;fontSize=11;fontColor=default;" edge="1" parent="14" source="3" target="10">
+                <mxCell id="12" value="" style="edgeStyle=none;shape=link;html=1;fontFamily=Helvetica;fontSize=11;fontColor=default;" parent="14" source="3" target="10" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="13" value="&lt;h1&gt;supernode和edge&lt;/h1&gt;&lt;p&gt;n2n构成的网络中，supernode扮演服务器节点，edge扮演客户端节点&lt;/p&gt;&lt;p&gt;supernode之间可以组成联盟，以起到负载均衡和高可用的功能&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;labelBackgroundColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;" vertex="1" parent="14">
-                    <mxGeometry x="350" width="290" height="120" as="geometry"/>
+                <mxCell id="13" value="&lt;h1&gt;supernode和edge&lt;/h1&gt;&lt;p&gt;n2n构成的网络中，supernode扮演服务器节点，edge扮演客户端节点&lt;/p&gt;&lt;p&gt;supernode之间可以组成联盟，以起到负载均衡和高可用的功能&lt;/p&gt;&lt;p&gt;edge节点和supernode节点可以互相ping通，并互相访问服务&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;labelBackgroundColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;" parent="14" vertex="1">
+                    <mxGeometry x="350" width="290" height="170" as="geometry"/>
                 </mxCell>
-                <mxCell id="20" value="" style="group" vertex="1" connectable="0" parent="1">
+                <mxCell id="20" value="" style="group" parent="1" vertex="1" connectable="0">
                     <mxGeometry x="-800" y="430" width="650" height="160" as="geometry"/>
                 </mxCell>
-                <mxCell id="15" value="supernode server配置" style="swimlane;labelBackgroundColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;fillColor=none;gradientColor=none;html=1;startSize=23;" vertex="1" parent="20">
+                <mxCell id="15" value="supernode server配置" style="swimlane;labelBackgroundColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;fillColor=none;gradientColor=none;html=1;startSize=23;" parent="20" vertex="1">
                     <mxGeometry width="270" height="130" as="geometry">
                         <mxRectangle x="-800" y="440" width="110" height="23" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="18" value="- host: string 监听host&lt;br&gt;- port: number 监听端口&lt;br&gt;- min_auto_ip_net: string 自动分配ip最小CIDR&lt;br&gt;- max_auto_ip_net: string 自动分配ip最大CIDR&lt;br&gt;- community_file: string community.conf所在的位置&lt;br&gt;" style="text;html=1;align=left;verticalAlign=top;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;fontFamily=Helvetica;fontColor=default;" vertex="1" parent="15">
+                <mxCell id="18" value="- host: string 监听host&lt;br&gt;- port: number 监听端口&lt;br&gt;- min_auto_ip_net: string 自动分配ip最小CIDR&lt;br&gt;- max_auto_ip_net: string 自动分配ip最大CIDR&lt;br&gt;- community_file: string community.conf所在的位置&lt;br&gt;" style="text;html=1;align=left;verticalAlign=top;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;fontFamily=Helvetica;fontColor=default;" parent="15" vertex="1">
                     <mxGeometry x="10" y="30" width="260" height="70" as="geometry"/>
                 </mxCell>
-                <mxCell id="19" value="&lt;h1&gt;supernode server配置示例&lt;/h1&gt;&lt;div&gt;const options = {&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre&quot;&gt;&#9;&lt;/span&gt;host: &quot;0.0.0.0&quot;,&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre&quot;&gt;&#9;&lt;/span&gt;port: 7777,&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre&quot;&gt;&#9;&lt;/span&gt;min_auto_ip_net: &quot;192.168.1.0/24&quot;,&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre&quot;&gt;&#9;&lt;/span&gt;max_auto_ip_net: &quot;192.168.1.255/24&quot;,&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre&quot;&gt;&#9;&lt;/span&gt;community_file: &quot;/path/to/community.conf&quot;&lt;br&gt;&lt;/div&gt;&lt;div&gt;}&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;labelBackgroundColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;" vertex="1" parent="20">
+                <mxCell id="19" value="&lt;h1&gt;supernode server配置示例&lt;/h1&gt;&lt;div&gt;const options = {&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre&quot;&gt;&#9;&lt;/span&gt;host: &quot;0.0.0.0&quot;,&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre&quot;&gt;&#9;&lt;/span&gt;port: 7777,&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre&quot;&gt;&#9;&lt;/span&gt;min_auto_ip_net: &quot;192.168.1.0/24&quot;,&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre&quot;&gt;&#9;&lt;/span&gt;max_auto_ip_net: &quot;192.168.1.255/24&quot;,&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;white-space: pre&quot;&gt;&#9;&lt;/span&gt;community_file: &quot;/path/to/community.conf&quot;&lt;br&gt;&lt;/div&gt;&lt;div&gt;}&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;labelBackgroundColor=default;fontFamily=Helvetica;fontSize=11;fontColor=default;" parent="20" vertex="1">
                     <mxGeometry x="340" width="310" height="160" as="geometry"/>
                 </mxCell>
             </root>

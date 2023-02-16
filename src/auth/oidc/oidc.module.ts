@@ -8,6 +8,7 @@ import { OidcService } from './oidc.service';
 import { OidcController } from './oidc.controller';
 import { SessionSerializer } from './session.serializer';
 import { AuditModule } from '@/modules/audit/audit.module';
+import { UserModule } from '@/modules/user/user.module';
 
 const config = useConfig();
 
@@ -27,6 +28,7 @@ const OidcStrategyFactory = {
         imports: [
           PassportModule.register({ session: true, defaultStrategy: 'oidc' }),
           AuditModule,
+          UserModule,
         ],
         controllers: [OidcController],
         providers: [OidcStrategyFactory, OidcService, SessionSerializer],

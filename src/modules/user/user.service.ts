@@ -14,6 +14,8 @@ import { User as UserModel } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Op } from 'sequelize';
+import { OidcUserDto } from './dto/oidc-user.dto';
+import { useConfig } from '@/utils/config.util';
 
 @Injectable()
 export class UserService extends LoggerProvider {
@@ -83,6 +85,27 @@ export class UserService extends LoggerProvider {
           { password },
           { [Op.or]: [{ name: username }, { email: username }] },
         ],
+      },
+    });
+  }
+
+  public async findOrCreate(user: OidcUserDto) {
+    const config = useConfig();
+    return await this._userModel.findOrCreate({
+      where: {
+        [Op.or]: [
+          { email: user.userinfo.email },
+          { uniqueId: user.userinfo.sub },
+        ],
+      },
+      defaults: {
+        name: user.userinfo.name,
+        email: user.userinfo.email,
+        uniqueId: user.userinfo.sub,
+        issuer: 'oidc',
+        isAdmin: Array.from((user.userinfo.groups as string[]) ?? []).includes(
+          config.oidc.adminGroup,
+        ),
       },
     });
   }

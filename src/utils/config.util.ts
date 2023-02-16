@@ -27,6 +27,7 @@ export interface OidcConfig {
   clientSecret: string;
   scope: string;
   redirectUrl: string;
+  adminGroup?: string;
 }
 
 export interface DataSourceConfig {
@@ -54,6 +55,7 @@ const defaultConfig: Config = {
     clientSecret: '',
     scope: '',
     redirectUrl: '',
+    adminGroup: 'admin',
   },
   dataSource: {
     dialect: 'sqlite',
@@ -78,6 +80,7 @@ const envConfigMap: Record<string, string> = {
   OIDC_CLIENT_SECRET: 'oidc.clientSecret',
   OIDC_SCOPE: 'oidc.scope',
   OIDC_REDIRECT_URL: 'oidc.redirectUrl',
+  OIDC_ADMIN_GROUP: 'oidc.adminGroup',
 
   DATA_SOURCE_DIALECT: 'dataSource.dialect',
   DATA_SOURCE_HOST: 'dataSource.host',

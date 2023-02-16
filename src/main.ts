@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { VersioningType } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import * as session from 'express-session';
 import * as passport from 'passport';
 
@@ -14,10 +14,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: LogLevels.slice(0, config.app.logLevel),
   });
+  // Versioning API
   app.enableVersioning({
     type: VersioningType.URI,
   });
-
+  // Swagger & OpenAPI
   const swaggerBuilder = new DocumentBuilder()
     .setTitle('Supernode server')
     .setVersion('1.0')
@@ -25,7 +26,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, swaggerBuilder);
   SwaggerModule.setup('api', app, document);
-
+  // Session & Authentication
   app.use(
     session({
       secret: 'secret', // to sign session id
@@ -40,6 +41,9 @@ async function bootstrap() {
   );
   app.use(passport.initialize());
   app.use(passport.session());
+
+  // pipes
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   await app.listen(3000);
 }

@@ -18,6 +18,11 @@ const logger = new Logger('Database');
       logging: (sql, time) => {
         logger.debug(`SQL: "${sql}" executed in ${time}ms`);
       },
+      sync: {
+        alter: {
+          drop: false,
+        },
+      },
     }),
   ],
 })

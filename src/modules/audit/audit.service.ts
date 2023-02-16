@@ -8,6 +8,7 @@ import {
 } from '@/utils/pagination.util';
 
 import { AuditLog as AuditLogModel } from './entities/audit.entity';
+import { CreateAuditDto } from './dto/create-audit.dto';
 
 @Injectable()
 export class AuditService {
@@ -16,11 +17,8 @@ export class AuditService {
     private readonly _auditLogModel: typeof AuditLogModel,
   ) {}
 
-  public async addAuditLog(userId: number, log: string) {
-    await this._auditLogModel.create({
-      userId,
-      log,
-    });
+  public async log(detail: CreateAuditDto) {
+    await this._auditLogModel.create(Object.assign(detail));
   }
 
   public async list(
