@@ -9,10 +9,10 @@ import {
   Query,
   UseGuards,
   UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { ValidationPipe } from '@/common/pipes/validation.pipe';
 import { Pagination, PaginationOptions } from '@/utils/pagination.util';
 
 import { User as UserModel } from './entities/user.entity';
@@ -31,6 +31,7 @@ export class UserControllerV1 {
 
   @ApiOperation({ summary: '列出用户列表' })
   @UseGuards(AuthenticatedGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
   @Get()
   async list(
     @Query() paginationOptions: PaginationOptions,
@@ -40,6 +41,7 @@ export class UserControllerV1 {
 
   @ApiOperation({ summary: '获取特定id的用户' })
   @UseGuards(AuthenticatedGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
   @Get(':id')
   async get(@Param('id') userId: number): Promise<UserModel> {
     return await this._userService.get(userId);
@@ -48,7 +50,7 @@ export class UserControllerV1 {
   @ApiOperation({ summary: '添加用户' })
   @UseGuards(AuthenticatedGuard)
   @Post()
-  @UsePipes(new ValidationPipe())
+  @UsePipes(new ValidationPipe({ transform: true }))
   async create(@Body() body: CreateUserDto) {
     return await this._userService.create(body);
   }
@@ -56,7 +58,7 @@ export class UserControllerV1 {
   @ApiOperation({ summary: '更新用户' })
   @UseGuards(AuthenticatedGuard)
   @Put(':id')
-  @UsePipes(new ValidationPipe())
+  @UsePipes(new ValidationPipe({ transform: true }))
   async update(@Param('id') userId: number, @Body() body: UpdateUserDto) {
     return await this._userService.update(userId, body);
   }
@@ -64,7 +66,7 @@ export class UserControllerV1 {
   @ApiOperation({ summary: '删除用户' })
   @UseGuards(AuthenticatedGuard)
   @Delete(':id')
-  @UsePipes(new ValidationPipe())
+  @UsePipes(new ValidationPipe({ transform: true }))
   async destroy(@Param('id') userId: number) {
     return await this._userService.destroy(userId);
   }

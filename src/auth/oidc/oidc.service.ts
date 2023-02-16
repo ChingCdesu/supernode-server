@@ -14,7 +14,7 @@ export class OidcService extends LoggerProvider {
     super();
   }
 
-  async callback(user: OidcUserDto) {
+  public async callback(user: OidcUserDto) {
     const [userInstance, created] = await this._userSerivce.findOrCreate(user);
     if (created) {
       this._auditService.log({

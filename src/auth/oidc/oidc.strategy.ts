@@ -1,3 +1,4 @@
+import { OidcUserDto } from '@/modules/user/dto/oidc-user.dto';
 import { useConfig } from '@/utils/config.util';
 import { UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
@@ -21,7 +22,7 @@ export const buildOpenIdClient = async () => {
 };
 
 export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
-  client: Client;
+  _client: Client;
 
   constructor(private readonly _oidcService: OidcService, client: Client) {
     const config = useConfig();
@@ -35,11 +36,11 @@ export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
       usePKCE: false,
     });
 
-    this.client = client;
+    this._client = client;
   }
 
-  async validate(tokenset: TokenSet): Promise<any> {
-    const userinfo: UserinfoResponse = await this.client.userinfo(tokenset);
+  async validate(tokenset: TokenSet): Promise<OidcUserDto> {
+    const userinfo: UserinfoResponse = await this._client.userinfo(tokenset);
 
     try {
       const id_token = tokenset.id_token;

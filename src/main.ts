@@ -42,9 +42,6 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // pipes
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
-
   await app.listen(3000);
 }
 bootstrap();
