@@ -13,6 +13,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { Request } from 'express';
 
 import { Pagination, PaginationOptions } from '@/utils/pagination.util';
 import { AdministrationGuard } from '@/common/guards/administration.guard';
@@ -76,7 +77,7 @@ export class UserControllerV1 {
   @ApiOperation({ summary: '获取自己的用户信息' })
   @UseGuards(AuthenticatedGuard)
   @Get('me')
-  async me(@Req() req: any) {
+  async me(@Req() req: Request) {
     return req.user;
   }
 
@@ -84,8 +85,8 @@ export class UserControllerV1 {
   @UseGuards(AuthenticatedGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   @Put('me')
-  async updateMe(@Req() req: any, @Body() body: UpdateUserDto) {
-    const userId = req.user.userId;
+  async updateMe(@Req() req: Request, @Body() body: UpdateUserDto) {
+    const userId = req.user.id;
     return await this._userService.update(userId, body);
   }
 }
