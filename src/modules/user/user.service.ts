@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, Scope } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Op } from 'sequelize';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
 import { isNull } from 'lodash';
 
 import {
@@ -9,18 +10,18 @@ import {
   PaginationOptions,
 } from '@/utils/pagination.util';
 import { LoggerProvider } from '@/utils/logger.util';
-import { useConfig } from '@/utils/config.util';
 
 import { AuditService } from '@/modules/audit/audit.service';
 
 import { CreateUserDto } from './dto/create-user.dto';
-import { OidcUserDto } from './dto/oidc-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User as UserModel } from './entities/user.entity';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class UserService extends LoggerProvider {
   constructor(
+    @Inject(REQUEST)
+    private readonly _req: Request,
     @InjectModel(UserModel)
     private readonly _userModel: typeof UserModel,
     private readonly _auditService: AuditService,
@@ -54,60 +55,58 @@ export class UserService extends LoggerProvider {
   }
 
   public async create(createUserDto: CreateUserDto): Promise<UserModel> {
-    return await this._userModel.create(Object.assign(createUserDto));
+    const user = await this._userModel.create(Object.assign(createUserDto));
+    const operator = this._req.user;
+    await this._auditService.log({
+      action: 'create',
+      resource: 'user',
+      resourceId: user.id,
+      userId: operator.id,
+      log: `User #${user.id} ${user.name} created`,
+    });
+    return user;
   }
 
   public async update(
     userId: number,
     updateUserDto: UpdateUserDto,
   ): Promise<void> {
-    await this._userModel.update(updateUserDto, {
+    const [affectedRows] = await this._userModel.update(updateUserDto, {
       where: {
         id: userId,
       },
+      limit: 1,
     });
+    if (affectedRows > 0) {
+      const operator = this._req.user;
+      await this._auditService.log({
+        action: 'create',
+        resource: 'user',
+        resourceId: userId,
+        userId: operator.id,
+        log:
+          `User #${userId} updated fields: ` +
+          Object.keys(updateUserDto).join(','),
+      });
+    }
   }
 
   public async destroy(userId: number): Promise<void> {
-    await this._userModel.destroy({
+    const affectedRows = await this._userModel.destroy({
       where: {
         id: userId,
       },
+      limit: 1,
     });
-  }
-
-  public async validate(
-    username: string,
-    password: string,
-  ): Promise<UserModel | null> {
-    return await this._userModel.findOne({
-      where: {
-        [Op.and]: [
-          { password },
-          { [Op.or]: [{ name: username }, { email: username }] },
-        ],
-      },
-    });
-  }
-
-  public async findOrCreate(user: OidcUserDto) {
-    const config = useConfig();
-    return await this._userModel.findOrCreate({
-      where: {
-        [Op.or]: [
-          { email: user.userinfo.email },
-          { uniqueId: user.userinfo.sub },
-        ],
-      },
-      defaults: {
-        name: user.userinfo.name,
-        email: user.userinfo.email,
-        uniqueId: user.userinfo.sub,
-        issuer: 'oidc',
-        isAdmin: Array.from((user.userinfo.groups as string[]) ?? []).includes(
-          config.oidc.adminGroup,
-        ),
-      },
-    });
+    if (affectedRows > 0) {
+      const operator = this._req.user;
+      await this._auditService.log({
+        action: 'create',
+        resource: 'user',
+        resourceId: userId,
+        userId: operator.id,
+        log: `User #${userId} deleted`,
+      });
+    }
   }
 }

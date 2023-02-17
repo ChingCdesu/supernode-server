@@ -40,7 +40,7 @@ specifiers:
   mysql2: ^3.1.0
   node-addon-api: ^5.1.0
   openid-client: ^5.3.2
-  passport: ^0.6.0
+  passport: ^0.5.0
   passport-local: ^1.0.0
   pg: ^8.9.0
   prettier: ^2.3.2
@@ -62,7 +62,7 @@ specifiers:
 dependencies:
   '@nestjs/common': registry.npmjs.org/@nestjs/common/9.2.1_welcnyot5bzd5wa2aovbkxpi4i
   '@nestjs/core': registry.npmjs.org/@nestjs/core/9.2.1_e6la6qvsclaae2becwjnmfvsuq
-  '@nestjs/passport': registry.npmjs.org/@nestjs/passport/9.0.1_6o47igfla2pj7yzh7agpvpttka
+  '@nestjs/passport': registry.npmjs.org/@nestjs/passport/9.0.1_hine52zbau67usjmgjlktk65gm
   '@nestjs/platform-express': registry.npmjs.org/@nestjs/platform-express/9.2.1_hjcqpoaebdr7gdo5hgc22hthbe
   '@nestjs/sequelize': registry.npmjs.org/@nestjs/sequelize/9.0.0_wfah4rmzcxrf3iztidlpe6zp7e
   '@nestjs/swagger': registry.npmjs.org/@nestjs/swagger/6.1.4_4fhhxyztwhblafku3krlstrun4
@@ -76,7 +76,7 @@ dependencies:
   mysql2: registry.npmjs.org/mysql2/3.1.0
   node-addon-api: registry.npmjs.org/node-addon-api/5.1.0
   openid-client: registry.npmjs.org/openid-client/5.3.2
-  passport: registry.npmjs.org/passport/0.6.0
+  passport: registry.npmjs.org/passport/0.5.3
   passport-local: registry.npmjs.org/passport-local/1.0.0
   pg: registry.npmjs.org/pg/8.9.0
   reflect-metadata: registry.npmjs.org/reflect-metadata/0.1.13
@@ -1186,7 +1186,7 @@ packages:
       reflect-metadata: registry.npmjs.org/reflect-metadata/0.1.13
     dev: false
 
-  registry.npmjs.org/@nestjs/passport/9.0.1_6o47igfla2pj7yzh7agpvpttka:
+  registry.npmjs.org/@nestjs/passport/9.0.1_hine52zbau67usjmgjlktk65gm:
     resolution: {integrity: sha512-WhT0yhpMp1B8b1OdQdPv/rd2O8V0HUmoGsWFzJKPsALuaxozjem2WotUEy1GV/TT8kvfC4ok7tECjRAArO+I8Q==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/@nestjs/passport/-/passport-9.0.1.tgz}
     id: registry.npmjs.org/@nestjs/passport/9.0.1
     name: '@nestjs/passport'
@@ -1196,7 +1196,7 @@ packages:
       passport: ^0.4.0 || ^0.5.0 || ^0.6.0
     dependencies:
       '@nestjs/common': registry.npmjs.org/@nestjs/common/9.2.1_welcnyot5bzd5wa2aovbkxpi4i
-      passport: registry.npmjs.org/passport/0.6.0
+      passport: registry.npmjs.org/passport/0.5.3
     dev: false
 
   registry.npmjs.org/@nestjs/platform-express/9.2.1_hjcqpoaebdr7gdo5hgc22hthbe:
@@ -6006,15 +6006,14 @@ packages:
     engines: {node: '>= 0.4.0'}
     dev: false
 
-  registry.npmjs.org/passport/0.6.0:
-    resolution: {integrity: sha512-0fe+p3ZnrWRW74fe8+SvCyf4a3Pb2/h7gFkQ8yTJpAO50gDzlfjZUZTO1k5Eg9kUct22OxHLqDZoKUWRHOh9ug==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/passport/-/passport-0.6.0.tgz}
+  registry.npmjs.org/passport/0.5.3:
+    resolution: {integrity: sha512-gGc+70h4gGdBWNsR3FuV3byLDY6KBTJAIExGFXTpQaYfbbcHCBlRRKx7RBQSpqEqc5Hh2qVzRs7ssvSfOpkUEA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/passport/-/passport-0.5.3.tgz}
     name: passport
-    version: 0.6.0
+    version: 0.5.3
     engines: {node: '>= 0.4.0'}
     dependencies:
       passport-strategy: registry.npmjs.org/passport-strategy/1.0.0
       pause: registry.npmjs.org/pause/0.0.1
-      utils-merge: registry.npmjs.org/utils-merge/1.0.1
     dev: false
 
   registry.npmjs.org/path-exists/4.0.0:

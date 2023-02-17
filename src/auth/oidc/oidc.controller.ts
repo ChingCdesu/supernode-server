@@ -41,9 +41,9 @@ export class OidcController extends LoggerProvider {
   @ApiOperation({ summary: 'OAuth2登出' })
   @UseGuards(AuthenticatedGuard)
   @Delete('auth/oidc/logout')
-  async logout(@Req() req: any, @Res() res: Response) {
-    const id_token = req.user ? req.user.id_token : undefined;
-    req.logout();
+  async logout(@Req() req: Request, @Res() res: Response) {
+    const id_token = req.user ? (req.user as OidcUserDto).id_token : undefined;
+    req.logout(this.logger.error);
     req.session.destroy(async () => {
       const config = useConfig();
       const TrustIssuer = await Issuer.discover(config.oidc.autoDiscoverUrl);

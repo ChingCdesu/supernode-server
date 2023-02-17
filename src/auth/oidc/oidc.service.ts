@@ -1,21 +1,39 @@
+import { InjectModel } from '@nestjs/sequelize';
 import { Injectable } from '@nestjs/common';
+import { Op } from 'sequelize';
 
-import { OidcUserDto } from '@/modules/user/dto/oidc-user.dto';
-import { UserService } from '@/modules/user/user.service';
 import { AuditService } from '@/modules/audit/audit.service';
 import { LoggerProvider } from '@/utils/logger.util';
+import { OidcUserDto } from '@/modules/user/dto/oidc-user.dto';
+import { User as UserModel } from '@/modules/user/entities/user.entity';
+import { useConfig } from '@/utils/config.util';
 
 @Injectable()
 export class OidcService extends LoggerProvider {
   constructor(
-    private readonly _userSerivce: UserService,
+    @InjectModel(UserModel) private readonly _userModel: typeof UserModel,
     private readonly _auditService: AuditService,
   ) {
     super();
   }
 
   public async callback(user: OidcUserDto) {
-    const [userInstance, created] = await this._userSerivce.findOrCreate(user);
+    const config = useConfig();
+    const [userInstance, created] = await this._userModel.findOrCreate({
+      where: {
+        [Op.or]: [{ email: user.email }, { uniqueId: user.sub }],
+      },
+      defaults: {
+        name: user.name,
+        email: user.email,
+        uniqueId: user.sub,
+        issuer: 'oidc',
+        isAdmin: Array.from((user.groups as string[]) ?? []).includes(
+          config.oidc.adminGroup,
+        ),
+      },
+    });
+
     if (created) {
       this._auditService.log({
         action: 'create',

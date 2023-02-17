@@ -1,10 +1,12 @@
-import { Column, Default, Model, Table } from 'sequelize-typescript';
+import { Column, Default, Model, Table, Unique } from 'sequelize-typescript';
 
 @Table
 export class User extends Model {
+  @Unique
   @Column
   name: string;
 
+  @Unique
   @Column
   email?: string;
 
@@ -21,6 +23,7 @@ export class User extends Model {
   @Column
   issuer: string;
 
+  @Unique
   @Column
   uniqueId?: string;
 }

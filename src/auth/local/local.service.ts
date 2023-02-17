@@ -1,16 +1,27 @@
+import { InjectModel } from '@nestjs/sequelize';
 import { Injectable } from '@nestjs/common';
+import { Op } from 'sequelize';
 
 import { User as UserModel } from '@/modules/user/entities/user.entity';
-import { UserService } from '@/modules/user/user.service';
 
 @Injectable()
 export class LocalAuthService {
-  constructor(private readonly _userService: UserService) {}
+  constructor(
+    @InjectModel(UserModel)
+    private readonly _userModel: typeof UserModel,
+  ) {}
 
-  async validateUser(
+  public async validateUser(
     username: string,
-    pass: string,
+    password: string,
   ): Promise<UserModel | null> {
-    return await this._userService.validate(username, pass);
+    return await this._userModel.findOne({
+      where: {
+        [Op.and]: [
+          { password },
+          { [Op.or]: [{ name: username }, { email: username }] },
+        ],
+      },
+    });
   }
 }

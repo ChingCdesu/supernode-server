@@ -1,7 +1,3 @@
-import { OidcUserDto } from '@/modules/user/dto/oidc-user.dto';
-import { useConfig } from '@/utils/config.util';
-import { UnauthorizedException } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
 import {
   Client,
   Issuer,
@@ -9,7 +5,11 @@ import {
   TokenSet,
   UserinfoResponse,
 } from 'openid-client';
-import { OidcService } from './oidc.service';
+import { PassportStrategy } from '@nestjs/passport';
+import { UnauthorizedException } from '@nestjs/common';
+
+import { OidcUserDto } from '@/modules/user/dto/oidc-user.dto';
+import { useConfig } from '@/utils/config.util';
 
 export const buildOpenIdClient = async () => {
   const config = useConfig();
@@ -24,7 +24,7 @@ export const buildOpenIdClient = async () => {
 export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
   _client: Client;
 
-  constructor(private readonly _oidcService: OidcService, client: Client) {
+  constructor(client: Client) {
     const config = useConfig();
     super({
       client: client,
@@ -47,10 +47,12 @@ export class OidcStrategy extends PassportStrategy(Strategy, 'oidc') {
       const access_token = tokenset.access_token;
       const refresh_token = tokenset.refresh_token;
       const user = {
-        id_token,
-        access_token,
-        refresh_token,
-        userinfo,
+        ...userinfo,
+        token: {
+          id_token,
+          access_token,
+          refresh_token,
+        },
       };
       return user;
     } catch (err) {

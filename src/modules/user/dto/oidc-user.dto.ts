@@ -1,8 +1,5 @@
 import { UserinfoResponse } from 'openid-client';
 
-export class OidcUserDto {
-  id_token: string;
-  access_token: string;
-  refresh_token: string;
-  userinfo: UserinfoResponse;
+export interface OidcUserDto extends UserinfoResponse {
+  token: { id_token: string; access_token: string; refresh_token: string };
 }
