@@ -1,10 +1,10 @@
 import {
+  BelongsTo,
+  Column,
+  ForeignKey,
+  HasMany,
   Model,
   Table,
-  Column,
-  HasMany,
-  BelongsTo,
-  ForeignKey,
 } from 'sequelize-typescript';
 
 @Table

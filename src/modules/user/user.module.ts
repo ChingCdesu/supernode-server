@@ -3,8 +3,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 
 import { AuditModule } from '@/modules/audit/audit.module';
 
-import { UserControllerV1 } from './user.controller';
 import { User } from './entities/user.entity';
+import { UserControllerV1 } from './user.controller';
 import { UserService } from './user.service';
 
 @Module({

@@ -1,6 +1,8 @@
-import { LocalAuthGuard } from '@/common/guards/local-auth.guard';
-import { Controller, Delete, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Controller, Delete, Post, Req, UseGuards } from '@nestjs/common';
+
+import { LocalAuthGuard } from '@/common/guards/local-auth.guard';
+
 import { LocalAuthService } from './local.service';
 
 @ApiTags('Auth')

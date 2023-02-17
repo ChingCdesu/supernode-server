@@ -1,16 +1,17 @@
-import yaml from 'yaml';
-import path from 'path';
 import * as fs from 'fs';
-import { PartialDeep } from '@/utils/type.util';
-import { LogLevel } from '@/utils/logger.util';
-import { set } from 'lodash';
-
 import type { Dialect } from 'sequelize';
+import path from 'path';
+import { set } from 'lodash';
+import yaml from 'yaml';
+
+import { LogLevel } from '@/utils/logger.util';
+import { PartialDeep } from '@/utils/type.util';
 
 export interface Config {
   app: AppConfig;
   dataSource: DataSourceConfig;
   oidc: OidcConfig;
+  cache: CacheConfig;
 }
 
 export interface AppConfig {
@@ -41,6 +42,10 @@ export interface DataSourceConfig {
   storage?: string;
 }
 
+export interface CacheConfig {
+  redisUrl?: string;
+}
+
 const defaultConfig: Config = {
   app: {
     logLevel: LogLevel.log,
@@ -66,6 +71,7 @@ const defaultConfig: Config = {
     database: '',
     storage: 'data.sqlite',
   },
+  cache: {},
 };
 
 const envConfigMap: Record<string, string> = {
@@ -90,6 +96,8 @@ const envConfigMap: Record<string, string> = {
   DATA_SOURCE_DATABASE: 'dataSource.database',
   DATA_SOURCE_SCHEMA: 'dataSource.schema',
   DATA_SOURCE_STORAGE: 'dataSource.storage',
+
+  CACHE_REDIS_URL: 'cache.redisUrl',
 };
 
 let computedConfig: Config | undefined = undefined;

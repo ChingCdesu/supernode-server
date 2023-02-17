@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import {
   Equals,
   IsBoolean,
@@ -7,6 +6,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'username', description: '用户名' })

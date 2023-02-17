@@ -1,12 +1,12 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import {
+  Community as NativeCommunity,
   createServer,
+  getCommunities,
   loadCommunities,
   startServer,
   stopServer,
-  getCommunities,
-  Community as NativeCommunity,
 } from '@/utils/native.util';
 import { LoggerProvider } from '@/utils/logger.util';
 import { Community as CommunityModal } from './community.entity';

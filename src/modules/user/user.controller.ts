@@ -1,3 +1,4 @@
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -7,19 +8,20 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { Pagination, PaginationOptions } from '@/utils/pagination.util';
+import { AdministrationGuard } from '@/common/guards/administration.guard';
+import { AuthenticatedGuard } from '@/common/guards/authenticated.guard';
 
-import { User as UserModel } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User as UserModel } from './entities/user.entity';
 import { UserService } from './user.service';
-import { AuthenticatedGuard } from '@/common/guards/authenticated.guard';
 
 @ApiTags('Users')
 @Controller({
@@ -30,7 +32,7 @@ export class UserControllerV1 {
   constructor(private readonly _userService: UserService) {}
 
   @ApiOperation({ summary: '列出用户列表' })
-  @UseGuards(AuthenticatedGuard)
+  @UseGuards(AuthenticatedGuard, AdministrationGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   @Get()
   async list(
@@ -40,7 +42,7 @@ export class UserControllerV1 {
   }
 
   @ApiOperation({ summary: '获取特定id的用户' })
-  @UseGuards(AuthenticatedGuard)
+  @UseGuards(AuthenticatedGuard, AdministrationGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   @Get(':id')
   async get(@Param('id') userId: number): Promise<UserModel> {
@@ -48,26 +50,42 @@ export class UserControllerV1 {
   }
 
   @ApiOperation({ summary: '添加用户' })
-  @UseGuards(AuthenticatedGuard)
-  @Post()
+  @UseGuards(AuthenticatedGuard, AdministrationGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
+  @Post()
   async create(@Body() body: CreateUserDto) {
     return await this._userService.create(body);
   }
 
   @ApiOperation({ summary: '更新用户' })
-  @UseGuards(AuthenticatedGuard)
-  @Put(':id')
+  @UseGuards(AuthenticatedGuard, AdministrationGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
+  @Put(':id')
   async update(@Param('id') userId: number, @Body() body: UpdateUserDto) {
     return await this._userService.update(userId, body);
   }
 
   @ApiOperation({ summary: '删除用户' })
-  @UseGuards(AuthenticatedGuard)
-  @Delete(':id')
+  @UseGuards(AuthenticatedGuard, AdministrationGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
+  @Delete(':id')
   async destroy(@Param('id') userId: number) {
     return await this._userService.destroy(userId);
+  }
+
+  @ApiOperation({ summary: '获取自己的用户信息' })
+  @UseGuards(AuthenticatedGuard)
+  @Get('me')
+  async me(@Req() req: any) {
+    return req.user;
+  }
+
+  @ApiOperation({ summary: '更新自己的用户信息' })
+  @UseGuards(AuthenticatedGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @Put('me')
+  async updateMe(@Req() req: any, @Body() body: UpdateUserDto) {
+    const userId = req.user.userId;
+    return await this._userService.update(userId, body);
   }
 }

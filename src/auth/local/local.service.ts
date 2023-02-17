@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { UserService } from '@/modules/user/user.service';
 import { User as UserModel } from '@/modules/user/entities/user.entity';
+import { UserService } from '@/modules/user/user.service';
 
 @Injectable()
 export class LocalAuthService {

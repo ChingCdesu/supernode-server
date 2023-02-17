@@ -1,15 +1,15 @@
-import { Controller, Delete, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Controller, Delete, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { Issuer } from 'openid-client';
 
-import { OidcGuard } from '@/common/guards/oidc.guard';
+import { AuthenticatedGuard } from '@/common/guards/authenticated.guard';
 import { LoggerProvider } from '@/utils/logger.util';
+import { OidcGuard } from '@/common/guards/oidc.guard';
+import { OidcUserDto } from '@/modules/user/dto/oidc-user.dto';
+import { useConfig } from '@/utils/config.util';
 
 import { OidcService } from './oidc.service';
-import { OidcUserDto } from '@/modules/user/dto/oidc-user.dto';
-import { AuthenticatedGuard } from '@/common/guards/authenticated.guard';
-import { Issuer } from 'openid-client';
-import { useConfig } from '@/utils/config.util';
 
 @ApiTags('Auth')
 @Controller()

@@ -1,7 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { PaginationOptions, Pagination } from '@/utils/pagination.util';
+import { Pagination, PaginationOptions } from '@/utils/pagination.util';
 
 import { AuditService } from './audit.service';
 import { AuditLog as AuditLogModel } from './entities/audit.entity';

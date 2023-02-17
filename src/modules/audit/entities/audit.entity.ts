@@ -1,9 +1,9 @@
 import {
-  Table,
-  Model,
-  Column,
   BelongsTo,
+  Column,
   ForeignKey,
+  Model,
+  Table,
 } from 'sequelize-typescript';
 
 import { User } from '@/modules/user/entities/user.entity';

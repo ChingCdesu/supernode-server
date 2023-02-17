@@ -1,11 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsBoolean,
+  IsEmail,
+  IsEmpty,
   IsOptional,
   IsString,
-  IsBoolean,
-  IsEmpty,
-  IsEmail,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUserDto {
   @ApiProperty({ example: 'username', description: '用户名', required: false })

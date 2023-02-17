@@ -1,21 +1,22 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
 import { isNull } from 'lodash';
 
-import { LoggerProvider } from '@/utils/logger.util';
 import {
   Pagination,
   PaginationMeta,
   PaginationOptions,
 } from '@/utils/pagination.util';
+import { LoggerProvider } from '@/utils/logger.util';
+import { useConfig } from '@/utils/config.util';
+
 import { AuditService } from '@/modules/audit/audit.service';
 
-import { User as UserModel } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { Op } from 'sequelize';
 import { OidcUserDto } from './dto/oidc-user.dto';
-import { useConfig } from '@/utils/config.util';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User as UserModel } from './entities/user.entity';
 
 @Injectable()
 export class UserService extends LoggerProvider {

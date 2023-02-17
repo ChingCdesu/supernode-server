@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 
-import { useConfig } from '@/utils/config.util';
 import { AuditModule } from '@/modules/audit/audit.module';
+import { SessionSerializer } from '@/auth/session/session.serializer';
 import { UserModule } from '@/modules/user/user.module';
-import { JwtAuthModule } from '@/auth/jwt/jwt.module';
+import { useConfig } from '@/utils/config.util';
 
 import { OidcStrategy, buildOpenIdClient } from './oidc.strategy';
-import { OidcService } from './oidc.service';
 import { OidcController } from './oidc.controller';
-import { SessionSerializer } from '../session/session.serializer';
+import { OidcService } from './oidc.service';
 
 const config = useConfig();
 
@@ -30,7 +29,6 @@ const OidcStrategyFactory = {
           PassportModule.register({ session: true }),
           AuditModule,
           UserModule,
-          JwtAuthModule,
         ],
         controllers: [OidcController],
         providers: [OidcStrategyFactory, OidcService, SessionSerializer],
