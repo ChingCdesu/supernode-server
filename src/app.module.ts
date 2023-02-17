@@ -11,9 +11,9 @@ import { LocalAuthModule } from '@/auth/local/local.module';
 @Module({
   imports: [
     DatabaseConfig,
-    SupernodeModule,
     LocalAuthModule,
     OidcModule,
+    SupernodeModule,
     UserModule,
     AuditModule,
   ],

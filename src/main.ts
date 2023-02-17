@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { VersioningType } from '@nestjs/common';
 import * as session from 'express-session';
 import * as passport from 'passport';
 
@@ -25,7 +25,7 @@ async function bootstrap() {
     .addTag('supernodes')
     .build();
   const document = SwaggerModule.createDocument(app, swaggerBuilder);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('swagger', app, document);
   // Session & Authentication
   app.use(
     session({
