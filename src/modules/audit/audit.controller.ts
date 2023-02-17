@@ -1,5 +1,12 @@
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 
 import { Pagination, PaginationOptions } from '@/utils/pagination.util';
 import { AdministrationGuard } from '@/common/guards/administration.guard';
@@ -18,6 +25,7 @@ export class AuditController {
 
   @ApiOperation({ summary: '列出审计日志' })
   @UseGuards(AuthenticatedGuard, AdministrationGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
   @Get()
   async list(
     @Query() paginationOptions: PaginationOptions,
