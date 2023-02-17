@@ -1,0 +1,62 @@
+# this is example file, rename it to `appconfig.yaml` or `appconfig.yml`
+# you can use environment variable to set configs
+# CONFIGURATION IN FILES WILL BE OVERRIDEED BY ENVIRONMENT VARIABLE
+
+app:
+  # app log level, default is `3` (also means `log`)
+  # error = 1, warn, log, debug, verbose
+  ## same as: APP_LOG_LEVEL
+  logLevel: 3
+
+oidc:
+  # use OpenID Connect Auth, default is `false`
+  ## same as: OIDC_ENABLED
+  enabled: false
+  # name of OIDC provider
+  ## same as: OIDC_NAME
+  name: 'My OIDC provider'
+  # auto configuration url from OIDC provider
+  ## same as: OIDC_AUTO_DISCOVER_URL
+  autoDiscoverUrl: 'https://example.com/application/supernode/.well-known/openid-configuration'
+  # clientID and secret from OIDC provider
+  ## same as: OIDC_CLIENT_ID
+  clientID: '<client ID>'
+  ## same as: OIDC_CLIENT_SECRET
+  clientSecret: '<client secret>'
+  # scope of OIDC
+  ## same as: OIDC_SCOPE
+  scope: 'openid profile email group'
+  # app redirect url
+  ## same as: OIDC_REDIRECT_URL
+  redirectUrl: 'https://supernode.com'
+  # admin group mapping, user with admin privileges who is in this group
+  ## same as: OIDC_ADMIN_GROUP
+  adminGroup: 'admin'
+
+dataSource:
+  # you can use `sqlite`, `mysql`, `postgres`, default is `sqlite`
+  ## same as: DATA_SOURCE_DIALECT
+  dialect: 'sqlite'
+  # data source connection info, only valid when `dialect` is `mysql` or `postgres`
+  ## same as: DATA_SOURCE_HOST
+  host: 'localhost'
+  ## same as: DATA_SOURCE_PORT
+  port: 3306
+  ## same as: DATA_SOURCE_USERNAME
+  username: 'mysql'
+  ## same as: DATA_SOURCE_PASSWORD
+  password: 'mysql@password'
+  ## same as: DATA_SOURCE_DATABASE
+  database: 'supernode'
+  # only valid when `dialect` is `postgres`
+  ## same as: DATA_SOURCE_SCHEMA
+  schema: 'public'
+  # database file storage path, only valid when `dialect` is `sqlite`
+  ## same as: DATA_SOURCE_STORAGE
+  storage: 'db.sqlite'
+
+cache:
+  # redis used for session cache, default is `undefined`
+  # if `cache.redisUrl` is `undefined`, session cache will use `momery cache`
+  ## same as: CACHE_REDIS_URL
+  redisUrl: 'redis://localhost:6379'
