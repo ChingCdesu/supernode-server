@@ -13,8 +13,8 @@ import { LoggerProvider } from '@/utils/logger.util';
 
 import { AuditService } from '@/modules/audit/audit.service';
 
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 import { User as UserModel } from './entities/user.entity';
 
 @Injectable({ scope: Scope.REQUEST })
@@ -33,7 +33,7 @@ export class UserService extends LoggerProvider {
     paginationOptions: PaginationOptions,
   ): Promise<Pagination<UserModel>> {
     const result = await this._userModel.findAndCountAll({
-      order: [['createdAt', paginationOptions.order]],
+      order: [['id', paginationOptions.order]],
       offset: paginationOptions.offset,
       limit: paginationOptions.limit,
     });

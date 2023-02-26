@@ -8,7 +8,7 @@ import {
 import { PassportStrategy } from '@nestjs/passport';
 import { UnauthorizedException } from '@nestjs/common';
 
-import { OidcUserDto } from '@/modules/user/dto/oidc-user.dto';
+import { OidcUserDto } from '@/modules/user/dtos/oidc-user.dto';
 import { useConfig } from '@/utils/config.util';
 
 export const buildOpenIdClient = async () => {

@@ -4,7 +4,7 @@ import { Op } from 'sequelize';
 
 import { AuditService } from '@/modules/audit/audit.service';
 import { LoggerProvider } from '@/utils/logger.util';
-import { OidcUserDto } from '@/modules/user/dto/oidc-user.dto';
+import { OidcUserDto } from '@/modules/user/dtos/oidc-user.dto';
 import { User as UserModel } from '@/modules/user/entities/user.entity';
 import { useConfig } from '@/utils/config.util';
 

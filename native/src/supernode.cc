@@ -22,28 +22,28 @@ SupernodeOption::SupernodeOption(const Napi::Object &options) {
   }
 }
 
-CommunityUser::CommunityUser(const std::string &name,
+CommunityDevice::CommunityDevice(const std::string &name,
                              const std::string &publicKey)
     : name(name), publicKey(publicKey) {}
 
-CommunityUser::CommunityUser(const Napi::Object &user) {
-  if (!user["name"].IsString()) {
-    throw std::invalid_argument("\'user.name\' must be \'string\'");
+CommunityDevice::CommunityDevice(const Napi::Object &device) {
+  if (!device["name"].IsString()) {
+    throw std::invalid_argument("\'device.name\' must be \'string\'");
   }
-  if (!user["publicKey"].IsString()) {
-    throw std::invalid_argument("\'user.publicKey\' must be \'string\'");
+  if (!device["publicKey"].IsString()) {
+    throw std::invalid_argument("\'device.publicKey\' must be \'string\'");
   }
 
-  this->name = user["name"].As<Napi::String>().Utf8Value();
-  this->publicKey = user["publicKey"].As<Napi::String>().Utf8Value();
+  this->name = device["name"].As<Napi::String>().Utf8Value();
+  this->publicKey = device["publicKey"].As<Napi::String>().Utf8Value();
 }
 
 CommunityOption::CommunityOption(const Napi::Object &options) {
   if (!options["name"].IsString()) {
     throw std::invalid_argument("\'community.name\' must be \'string\'");
   }
-  if (!options["users"].IsArray()) {
-    throw std::invalid_argument("\'community.users\' must be \'array\'");
+  if (!options["devices"].IsArray()) {
+    throw std::invalid_argument("\'community.devices\' must be \'array\'");
   }
 
   if (options["subnet"].IsString()) {
@@ -54,12 +54,12 @@ CommunityOption::CommunityOption(const Napi::Object &options) {
   }
 
   this->name = options["name"].As<Napi::String>().Utf8Value();
-  const auto users = options["users"].As<Napi::Array>();
-  for (auto index = 0; index < users.Length(); ++index) {
-    if (!users[index].IsObject()) {
-      throw std::invalid_argument("\'community.users[%d]\' must be \'object\'");
+  const auto devices = options["devices"].As<Napi::Array>();
+  for (auto index = 0; index < devices.Length(); ++index) {
+    if (!devices[index].IsObject()) {
+      throw std::invalid_argument("\'community.devicess[%d]\' must be \'object\'");
     }
-    this->users.emplace_back(users[index].As<Napi::Object>());
+    this->devices.emplace_back(devices[index].As<Napi::Object>());
   }
 }
 
@@ -187,7 +187,7 @@ Napi::Object Supernode::toObject(Napi::Env env) {
 Napi::Array Supernode::getCommunities(Napi::Env env) {
   struct sn_community *community, *tmp;
   struct peer_info *peer, *tmpPeer;
-  sn_user_t *user, *tmpUser;
+  sn_user_t *device, *tmpDevice;
   macstr_t mac_buf;
   n2n_sock_str_t sockbuf;
   dec_ip_bit_str_t ip_bit_str = {'\0'};
@@ -217,17 +217,17 @@ Napi::Array Supernode::getCommunities(Napi::Env env) {
       peersArr.Set(peersIndex++, peerObj);
     }
     commObj.Set("peers", peersArr);
-    auto usersArr = Napi::Array::New(env);
-    auto usersIndex = 0;
-    HASH_ITER(hh, community->allowed_users, user, tmpUser) {
-      auto userObj = Napi::Object::New(env);
-      userObj.Set("name", reinterpret_cast<char *>(user->name));
-      bin_to_ascii(ascii_public_key, user->public_key,
-                   sizeof(user->public_key));
-      userObj.Set("publicKey", ascii_public_key);
-      usersArr.Set(usersIndex++, userObj);
+    auto devicesArr = Napi::Array::New(env);
+    auto devicesIndex = 0;
+    HASH_ITER(hh, community->allowed_users, device, tmpDevice) {
+      auto deviceObj = Napi::Object::New(env);
+      deviceObj.Set("name", reinterpret_cast<char *>(device->name));
+      bin_to_ascii(ascii_public_key, device->public_key,
+                   sizeof(device->public_key));
+      deviceObj.Set("publicKey", ascii_public_key);
+      devicesArr.Set(devicesIndex++, deviceObj);
     }
-    commObj.Set("users", usersArr);
+    commObj.Set("devices", devicesArr);
     commObj.Set("name", community->community);
     if (community->auto_ip_net.net_addr != 0) {
       commObj.Set("subnet",
@@ -311,7 +311,7 @@ void Supernode::applySubnetRange(const std::string &subnetStr) {
 
 void Supernode::applyCommunities(
     const std::vector<CommunityOption> &communities) {
-  sn_user_t *user, *tmp_user;
+  sn_user_t *device, *tmp_device;
   n2n_private_public_key_t public_key;
   char ascii_public_key[(N2N_PRIVATE_PUBLIC_KEY_SIZE * 8 + 5) / 6 + 1];
 
@@ -357,10 +357,10 @@ void Supernode::applyCommunities(
     }
 
     // remove allowed users from community
-    HASH_ITER(hh, comm->allowed_users, user, tmp_user) {
-      free(user->shared_secret_ctx);
-      HASH_DEL(comm->allowed_users, user);
-      free(user);
+    HASH_ITER(hh, comm->allowed_users, device, tmp_device) {
+      free(device->shared_secret_ctx);
+      HASH_DEL(comm->allowed_users, device);
+      free(device);
     }
 
     // remove community
@@ -442,16 +442,16 @@ void Supernode::applyCommunities(
     } else {
       assign_one_ip_subnet(&_sn, comm);
     }
-    for (auto uit = it->users.begin(); uit != it->users.end(); ++uit) {
-      user = (sn_user_t *)calloc(1, sizeof(sn_user_t));
-      memcpy(user->name, uit->name.c_str(), sizeof(user->name));
+    for (auto uit = it->devices.begin(); uit != it->devices.end(); ++uit) {
+      device = (sn_user_t *)calloc(1, sizeof(sn_user_t));
+      memcpy(device->name, uit->name.c_str(), sizeof(device->name));
       ascii_to_bin(public_key, const_cast<char *>(uit->publicKey.c_str()));
-      memcpy(user->public_key, public_key, sizeof(public_key));
+      memcpy(device->public_key, public_key, sizeof(public_key));
       HASH_ADD(hh, comm->allowed_users, public_key,
-               sizeof(n2n_private_public_key_t), user);
+               sizeof(n2n_private_public_key_t), device);
       traceEvent(TRACE_NORMAL,
-                 "added user '%s' with public key '%s' to community '%s'",
-                 user->name, uit->publicKey.c_str(), comm->community);
+                 "added device '%s' with public key '%s' to community '%s'",
+                 device->name, uit->publicKey.c_str(), comm->community);
       comm->header_encryption = HEADER_ENCRYPTION_ENABLED;
       packet_header_setup_key(
           comm->community, &(comm->header_encryption_ctx_static),

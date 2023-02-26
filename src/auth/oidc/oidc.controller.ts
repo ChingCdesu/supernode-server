@@ -6,7 +6,7 @@ import { Issuer } from 'openid-client';
 import { AuthenticatedGuard } from '@/common/guards/authenticated.guard';
 import { LoggerProvider } from '@/utils/logger.util';
 import { OidcGuard } from '@/common/guards/oidc.guard';
-import { OidcUserDto } from '@/modules/user/dto/oidc-user.dto';
+import { OidcUserDto } from '@/modules/user/dtos/oidc-user.dto';
 import { useConfig } from '@/utils/config.util';
 
 import { OidcService } from './oidc.service';

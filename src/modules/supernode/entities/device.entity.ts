@@ -2,28 +2,14 @@ import {
   BelongsTo,
   Column,
   ForeignKey,
-  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
 
-@Table
-export class Community extends Model {
-  @Column
-  name: string;
-
-  @Column
-  subnet?: string;
-
-  @Column
-  encryption?: boolean;
-
-  @HasMany(() => CommunityUser)
-  users: CommunityUser[];
-}
+import { Community } from './community.entity';
 
 @Table
-export class CommunityUser extends Model {
+export class Device extends Model {
   @Column
   name: string;
 

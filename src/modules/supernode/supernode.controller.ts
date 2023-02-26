@@ -1,5 +1,7 @@
-import { Community as NativeCommunity } from '@/utils/native.util';
 import { Controller, Get } from '@nestjs/common';
+
+import { Community as NativeCommunity } from '@/utils/native.util';
+
 import { SupernodeService } from './supernode.service';
 
 @Controller({

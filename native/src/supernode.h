@@ -26,10 +26,10 @@ struct SupernodeOption {
   std::string subnetRange = SN_DEFAULT_SUBNET_RANGE;
 };
 
-struct CommunityUser {
-  CommunityUser() = delete;
-  CommunityUser(const std::string &name, const std::string &publicKey);
-  CommunityUser(const Napi::Object &user);
+struct CommunityDevice {
+  CommunityDevice() = delete;
+  CommunityDevice(const std::string &name, const std::string &publicKey);
+  CommunityDevice(const Napi::Object &user);
   std::string name;
   std::string publicKey;
 };
@@ -39,7 +39,7 @@ struct CommunityOption {
   CommunityOption(const Napi::Object &options);
   std::string name;
   std::string subnet = "";
-  std::vector<CommunityUser> users;
+  std::vector<CommunityDevice> devices;
   bool encryption = false;
 };
 

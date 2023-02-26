@@ -1,5 +1,6 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+
 import {
   Community as NativeCommunity,
   createServer,
@@ -9,8 +10,9 @@ import {
   stopServer,
 } from '@/utils/native.util';
 import { LoggerProvider } from '@/utils/logger.util';
-import { Community as CommunityModal } from './community.entity';
 import { useConfig } from '@/utils/config.util';
+
+import { Community as CommunityModal } from './entities/community.entity';
 @Injectable()
 export class SupernodeService
   extends LoggerProvider
@@ -26,13 +28,11 @@ export class SupernodeService
   onModuleInit() {
     const config = useConfig();
     // 创建supernode服务器
-    createServer({
-      federationName: 'secret',
-    });
+    createServer(config.supernode);
     // 启动supernode服务器
     startServer().then(async () => {
       this.logger.log('supernode instance started');
-      await this._syncCommunities();
+      await this.syncCommunities();
     });
   }
 
@@ -41,13 +41,13 @@ export class SupernodeService
     this.logger.log('supernode instance stopped');
   }
 
-  public listCommunities(): Promise<NativeCommunity[]> {
+  public async listCommunities(): Promise<NativeCommunity[]> {
     return getCommunities();
   }
 
-  private async _syncCommunities(): Promise<void> {
+  public async syncCommunities(): Promise<void> {
     const communities = await this._communityModal.findAll();
     await loadCommunities(communities);
-    this.logger.log('communities loaded');
+    this.logger.debug('communities loaded');
   }
 }

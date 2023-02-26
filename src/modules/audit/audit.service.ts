@@ -8,7 +8,7 @@ import {
 } from '@/utils/pagination.util';
 
 import { AuditLog as AuditLogModel } from './entities/audit.entity';
-import { CreateAuditDto } from './dto/create-audit.dto';
+import { CreateAuditDto } from './dtos/create-audit.dto';
 
 @Injectable()
 export class AuditService {

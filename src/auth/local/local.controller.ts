@@ -10,7 +10,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
-import { AuthRequestDto } from '@/modules/user/dto/auth-request.dto';
+import { AuthRequestDto } from '@/modules/user/dtos/auth-request.dto';
 import { LocalAuthGuard } from '@/common/guards/local-auth.guard';
 import { LoggerProvider } from '@/utils/logger.util';
 

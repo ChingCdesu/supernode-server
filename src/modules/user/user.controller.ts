@@ -19,8 +19,8 @@ import { Pagination, PaginationOptions } from '@/utils/pagination.util';
 import { AdministrationGuard } from '@/common/guards/administration.guard';
 import { AuthenticatedGuard } from '@/common/guards/authenticated.guard';
 
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 import { User as UserModel } from './entities/user.entity';
 import { UserService } from './user.service';
 

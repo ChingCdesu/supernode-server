@@ -6,12 +6,14 @@ import yaml from 'yaml';
 
 import { LogLevel } from '@/utils/logger.util';
 import { PartialDeep } from '@/utils/type.util';
+import { SupernodeOptions } from './native.util';
 
 export interface Config {
   app: AppConfig;
   dataSource: DataSourceConfig;
   oidc: OidcConfig;
   cache: CacheConfig;
+  supernode: Partial<SupernodeOptions>;
 }
 
 export interface AppConfig {
@@ -72,6 +74,12 @@ const defaultConfig: Config = {
     storage: 'data.sqlite',
   },
   cache: {},
+  supernode: {
+    port: 7654,
+    federationName: '*Federation',
+    disableSpoofingProtection: true,
+    subnetRange: '10.128.255.0-10.255.255.0/24',
+  },
 };
 
 const envConfigMap: Record<string, string> = {

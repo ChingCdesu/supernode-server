@@ -39,6 +39,8 @@ export interface CommunityUser {
   publicKey: string;
 }
 
+export type CommunityDevice = CommunityUser;
+
 export interface CommunityOptions {
   /** 社群名称 */
   name: string;
@@ -47,14 +49,14 @@ export interface CommunityOptions {
   /** 是否启用加密通讯，如果启用了加密通讯，客户端必须指定密钥(`-k`)和加密方式(`-An`) */
   encryption?: boolean;
   /**
-   * 可访问此社群的用户
+   * 可访问此社群的设备
    *
-   * 如果`users`不为空，只有`users`内的用户可以访问该社群，且客户端需要强制启用加密，`encryption`选项会被忽略并强制开启
+   * 如果`devics`不为空，只有`device`内的设备可以访问该社群，且客户端需要强制启用加密，`encryption`选项会被忽略并强制开启
    * 必须指定密钥(`-k`)和只能使用特定的加密方式(`-A4 ChaCha20`和`-A5 SPECK`)
    *
-   * 如果`users`为空，则任何用户都可以访问该社群
+   * 如果`devices`为空，则任何设备都可以访问该社群
    */
-  users: CommunityUser[];
+  devices: CommunityDevice[];
 }
 
 /** 连接到社群的远程设备信息 */
@@ -74,7 +76,7 @@ export interface CommunityPeer {
 /** 社群状态信息 */
 export interface Community extends CommunityOptions {
   peers: CommunityPeer[];
-  users: CommunityUser[];
+  devices: CommunityDevice[];
 }
 
 /**
