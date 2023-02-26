@@ -5,8 +5,8 @@ import { AuditModule } from '@/modules/audit/audit.module';
 import { Community } from '@/modules/supernode/entities/community.entity';
 import { SupernodeModule } from '@/modules/supernode/supernode.module';
 
-import { CommunityManagementControllerV1 } from './community.controller';
-import { CommunityManagementService } from './community.service';
+import { CommunityBusinessControllerV1 } from './community.controller';
+import { CommunityBusinessService } from './community.service';
 
 @Module({
   imports: [
@@ -14,8 +14,8 @@ import { CommunityManagementService } from './community.service';
     SupernodeModule,
     SequelizeModule.forFeature([Community]),
   ],
-  controllers: [CommunityManagementControllerV1],
-  providers: [CommunityManagementService],
-  exports: [CommunityManagementService],
+  controllers: [CommunityBusinessControllerV1],
+  providers: [CommunityBusinessService],
+  exports: [CommunityBusinessService],
 })
-export class CommunityManagementModule {}
+export class CommunityBusinessModule {}

@@ -20,7 +20,7 @@ import { AuditService } from './audit.service';
   path: 'audit',
   version: '1',
 })
-export class AuditController {
+export class AuditControllerV1 {
   constructor(private readonly _auditService: AuditService) {}
 
   @ApiOperation({ summary: '列出审计日志' })

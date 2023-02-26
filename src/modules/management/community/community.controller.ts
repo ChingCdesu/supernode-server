@@ -26,7 +26,7 @@ import { TransferCommunityDto } from './dtos/transfer-community.dto';
   path: 'management/community',
   version: '1',
 })
-export class CommunityManagementController {
+export class CommunityManagementControllerV1 {
   constructor(
     private readonly _communityManagementService: CommunityManagementService,
   ) {}

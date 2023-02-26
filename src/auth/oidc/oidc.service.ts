@@ -35,7 +35,7 @@ export class OidcService extends LoggerProvider {
     });
 
     if (created) {
-      this._auditService.log({
+      await this._auditService.log({
         action: 'create',
         resource: 'user',
         resourceId: userInstance.id,

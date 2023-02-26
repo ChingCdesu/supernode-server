@@ -24,10 +24,10 @@ import { ManagementUpdateDeviceDto } from './dtos/update-device.dto';
 
 @ApiTags('Device Management')
 @Controller({
-  path: 'management/:communityId/device',
+  path: 'management/community/:communityId/device',
   version: '1',
 })
-export class DeviceManagementController {
+export class DeviceManagementControllerV1 {
   constructor(
     private readonly _deviceManagementService: DeviceManagementService,
   ) {}
@@ -75,7 +75,7 @@ export class DeviceManagementController {
   @UseGuards(AuthenticatedGuard, AdministrationGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   @Put(':id')
-  async transfer(
+  async update(
     @Param('communityId') communityId: number,
     @Param('id') deviceId: number,
     @Body() updateDeviceDto: ManagementUpdateDeviceDto,
