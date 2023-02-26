@@ -106,6 +106,12 @@ const envConfigMap: Record<string, string> = {
   DATA_SOURCE_STORAGE: 'dataSource.storage',
 
   CACHE_REDIS_URL: 'cache.redisUrl',
+
+  SUPERNODE_PORT: 'supernode.port',
+  SUPERNODE_FEDERATION_NAME: 'supernode.federationName',
+  SUPERNODE_FEDERATION_PARENT: 'supernode.federationParent',
+  SUPERNODE_DISABLE_SPOOFING_PROTECTION: 'supernode.disableSpoofingProtection',
+  SUPERNODE_SUBNET_RANGE: 'supernode.subnetRange',
 };
 
 let computedConfig: Config | undefined = undefined;
