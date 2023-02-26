@@ -6,6 +6,8 @@ import {
   Table,
 } from 'sequelize-typescript';
 
+import { User } from '@/modules/user/entities/user.entity';
+
 import { Community } from './community.entity';
 
 @Table
@@ -15,6 +17,13 @@ export class Device extends Model {
 
   @Column
   publicKey: string;
+
+  @ForeignKey(() => User)
+  @Column
+  ownerId: number;
+
+  @BelongsTo(() => User)
+  owner: User;
 
   @ForeignKey(() => Community)
   @Column

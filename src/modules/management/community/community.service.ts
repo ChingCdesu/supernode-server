@@ -1,11 +1,14 @@
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Injectable } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
 
 import {
   Pagination,
   PaginationMeta,
   PaginationOptions,
 } from '@/utils/pagination.util';
+import { AuditService } from '@/modules/audit/audit.service';
 import { Community as CommunityModal } from '@/modules/supernode/entities/community.entity';
 import { LoggerProvider } from '@/utils/logger.util';
 import { SupernodeService } from '@/modules/supernode/supernode.service';
@@ -14,12 +17,15 @@ import { CommunityDto } from './dtos/community.dto';
 import { CreateCommunityDto } from './dtos/create-community.dto';
 import { TransferCommunityDto } from './dtos/transfer-community.dto';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class CommunityManagementService extends LoggerProvider {
   constructor(
+    @Inject(REQUEST)
+    private readonly _req: Request,
     @InjectModel(CommunityModal)
     private _communityModal: typeof CommunityModal,
     private _supernodeService: SupernodeService,
+    private _auditService: AuditService,
   ) {
     super();
   }
@@ -89,6 +95,14 @@ export class CommunityManagementService extends LoggerProvider {
     const community = await this._communityModal.create(
       Object.assign(communityDto),
     );
+    const operator = this._req.user;
+    await this._auditService.log({
+      action: 'create',
+      resource: 'community',
+      resourceId: community.id,
+      userId: operator.id,
+      log: `Created community ${community.name}`,
+    });
     await this._supernodeService.syncCommunities();
     return {
       id: community.id,
@@ -109,6 +123,15 @@ export class CommunityManagementService extends LoggerProvider {
     }
     await community.destroy();
     await this._supernodeService.syncCommunities();
+
+    const operator = this._req.user;
+    await this._auditService.log({
+      action: 'destroy',
+      resource: 'community',
+      resourceId: community.id,
+      userId: operator.id,
+      log: `Destroyed community ${community.name}`,
+    });
   }
 
   public async export(communityId: number): Promise<TransferCommunityDto> {
@@ -116,6 +139,14 @@ export class CommunityManagementService extends LoggerProvider {
     if (!community) {
       throw new Error('Community not found');
     }
+    const operator = this._req.user;
+    await this._auditService.log({
+      action: 'export',
+      resource: 'community',
+      resourceId: community.id,
+      userId: operator.id,
+      log: `Exported community ${community.name}`,
+    });
     return {
       name: community.name,
       subnet: community.subnet,
@@ -130,6 +161,14 @@ export class CommunityManagementService extends LoggerProvider {
     const community = await this._communityModal.create(
       Object.assign(communityDto),
     );
+    const operator = this._req.user;
+    await this._auditService.log({
+      action: 'import',
+      resource: 'community',
+      resourceId: community.id,
+      userId: operator.id,
+      log: `Imported community ${community.name}`,
+    });
     await this._supernodeService.syncCommunities();
     return {
       id: community.id,

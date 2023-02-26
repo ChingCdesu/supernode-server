@@ -7,7 +7,7 @@ import {
   Matches,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { CreateDeviceDto } from '../../device/dtos/create-device.dto';
+import { ManagementCreateDeviceDto } from '../../device/dtos/create-device.dto';
 
 // 导入导出使用
 export class TransferCommunityDto {
@@ -31,5 +31,5 @@ export class TransferCommunityDto {
   @ApiProperty({ description: '设备列表', required: false })
   @IsOptional()
   @IsArray({ message: '设备列表必须为数组' })
-  devices?: CreateDeviceDto[];
+  devices?: ManagementCreateDeviceDto[];
 }

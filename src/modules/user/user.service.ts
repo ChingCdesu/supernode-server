@@ -86,7 +86,7 @@ export class UserService extends LoggerProvider {
         userId: operator.id,
         log:
           `User #${userId} updated fields: ` +
-          Object.keys(updateUserDto).join(','),
+          Object.keys(updateUserDto).join(', '),
       });
     }
   }

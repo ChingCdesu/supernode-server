@@ -4,8 +4,8 @@ import { Device } from './device.entity';
 
 @Table
 export class Community extends Model {
-  @Column
   @Unique
+  @Column
   name: string;
 
   @Column

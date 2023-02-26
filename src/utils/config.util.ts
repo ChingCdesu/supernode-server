@@ -77,7 +77,7 @@ const defaultConfig: Config = {
   supernode: {
     port: 7654,
     federationName: '*Federation',
-    disableSpoofingProtection: true,
+    disableSpoofingProtection: false,
     subnetRange: '10.128.255.0-10.255.255.0/24',
   },
 };
