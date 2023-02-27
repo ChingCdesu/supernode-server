@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt';
 import { InjectModel } from '@nestjs/sequelize';
 import { Injectable } from '@nestjs/common';
 import { Op } from 'sequelize';
@@ -15,13 +16,15 @@ export class LocalAuthService {
     username: string,
     password: string,
   ): Promise<UserModel | null> {
-    return await this._userModel.findOne({
+    const user = await this._userModel.findOne({
       where: {
-        [Op.and]: [
-          { password },
-          { [Op.or]: [{ name: username }, { email: username }] },
-        ],
+        [Op.or]: [{ name: username }, { email: username }],
       },
     });
+    if (!user) {
+      return null;
+    }
+    const valid = await bcrypt.compare(password, user.getDataValue('password'));
+    return valid ? user : null;
   }
 }

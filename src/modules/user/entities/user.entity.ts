@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt';
 import { Column, Default, Model, Table, Unique } from 'sequelize-typescript';
 
 @Table
@@ -14,10 +15,14 @@ export class User extends Model {
   @Column
   isAdmin: boolean;
 
-  @Column({
-    get: () => undefined,
-  })
-  password?: string;
+  @Column
+  get password(): string | undefined {
+    return undefined;
+  }
+
+  set password(value: string) {
+    this.setDataValue('password', bcrypt.hashSync(value, 12));
+  }
 
   @Default('local')
   @Column

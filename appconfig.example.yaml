@@ -60,3 +60,17 @@ cache:
   # if `cache.redisUrl` is `undefined`, session cache will use `momery cache`
   ## same as: CACHE_REDIS_URL
   redisUrl: 'redis://localhost:6379'
+
+supernode:
+  # udp service port, clients connect supernode service with this port
+  ## same as: SUPERNODE_PORT
+  port: 7654
+  # supernode federation name, one federation name pairs one server public key
+  ## same as: SUPERNODE_FEDERATION_NAME
+  federationName: '*Federation'
+  # server spoofing protection, recommand set to `false`
+  ## same as: SUPERNODE_DISABLE_SPOOFING_PROTECTION
+  disableSpoofingProtection: false
+  # communities' subnet range
+  ## same as: SUPERNODE_SUBNET_RANGE
+  subnetRange: '10.128.255.0-10.255.255.0/24'

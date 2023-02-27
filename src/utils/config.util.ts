@@ -1,5 +1,7 @@
+import * as crypto from 'crypto';
 import * as fs from 'fs';
 import type { Dialect } from 'sequelize';
+import { defaultsDeep } from 'lodash';
 import path from 'path';
 import { set } from 'lodash';
 import yaml from 'yaml';
@@ -18,6 +20,8 @@ export interface Config {
 
 export interface AppConfig {
   logLevel: LogLevel;
+  adminUsername: string;
+  adminPassword: string;
 }
 
 export interface OidcConfig {
@@ -48,9 +52,15 @@ export interface CacheConfig {
   redisUrl?: string;
 }
 
+const randomPassword = Buffer.from(crypto.getRandomValues(new Uint8Array(128)))
+  .toString('base64')
+  .slice(0, 16);
+
 const defaultConfig: Config = {
   app: {
     logLevel: LogLevel.log,
+    adminUsername: 'admin',
+    adminPassword: randomPassword,
   },
   oidc: {
     enabled: false,
@@ -156,7 +166,7 @@ function loadConfig(): Config {
   } else if (fs.existsSync('appconfig.json')) {
     fileConfig = parseConfigFromFile('appconfig.json');
   }
-  computedConfig = Object.assign(defaultConfig, fileConfig, envConfig);
+  computedConfig = defaultsDeep(envConfig, fileConfig, defaultConfig);
   return computedConfig;
 }
 

@@ -56,6 +56,6 @@ async function bootstrap() {
   app.use(passport.session());
 
   // Start app
-  await app.listen(3000);
+  await app.listen(8080);
 }
 bootstrap();

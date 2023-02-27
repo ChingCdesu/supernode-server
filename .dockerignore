@@ -49,3 +49,6 @@ lerna-debug.log*
 # dev files
 *.db
 *.sqlite
+
+# example files
+appconfig.example.yaml

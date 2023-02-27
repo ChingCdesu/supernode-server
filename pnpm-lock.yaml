@@ -10,6 +10,7 @@ specifiers:
   '@nestjs/sequelize': ^9.0.0
   '@nestjs/swagger': ^6.1.4
   '@nestjs/testing': ^9.0.0
+  '@types/bcrypt': ^5.0.0
   '@types/bindings': ^1.5.1
   '@types/connect-redis': ^0.0.20
   '@types/express': ^4.17.13
@@ -23,6 +24,7 @@ specifiers:
   '@types/supertest': ^2.0.11
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.0.0
+  bcrypt: ^5.1.0
   bindings: ^1.5.0
   class-transformer: ^0.5.1
   class-validator: ^0.14.0
@@ -66,6 +68,7 @@ dependencies:
   '@nestjs/platform-express': registry.npmjs.org/@nestjs/platform-express/9.2.1_hjcqpoaebdr7gdo5hgc22hthbe
   '@nestjs/sequelize': registry.npmjs.org/@nestjs/sequelize/9.0.0_wfah4rmzcxrf3iztidlpe6zp7e
   '@nestjs/swagger': registry.npmjs.org/@nestjs/swagger/6.1.4_4fhhxyztwhblafku3krlstrun4
+  bcrypt: registry.npmjs.org/bcrypt/5.1.0
   bindings: registry.npmjs.org/bindings/1.5.0
   class-transformer: registry.npmjs.org/class-transformer/0.5.1
   class-validator: registry.npmjs.org/class-validator/0.14.0
@@ -90,6 +93,7 @@ devDependencies:
   '@nestjs/cli': registry.npmjs.org/@nestjs/cli/9.1.9
   '@nestjs/schematics': registry.npmjs.org/@nestjs/schematics/9.0.4_typescript@4.9.5
   '@nestjs/testing': registry.npmjs.org/@nestjs/testing/9.2.1_wdbvfsxfdwzlwdfiyh2gynjl4m
+  '@types/bcrypt': registry.npmjs.org/@types/bcrypt/5.0.0
   '@types/bindings': registry.npmjs.org/@types/bindings/1.5.1
   '@types/connect-redis': registry.npmjs.org/@types/connect-redis/0.0.20
   '@types/express': registry.npmjs.org/@types/express/4.17.16
@@ -1483,6 +1487,14 @@ packages:
       '@babel/types': registry.npmjs.org/@babel/types/7.20.7
     dev: true
 
+  registry.npmjs.org/@types/bcrypt/5.0.0:
+    resolution: {integrity: sha512-agtcFKaruL8TmcvqbndlqHPSJgsolhf/qPWchFlgnW1gECTN/nKbFcoFnvKAQRFfKbh+BO6A3SWdJu9t+xF3Lw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/@types/bcrypt/-/bcrypt-5.0.0.tgz}
+    name: '@types/bcrypt'
+    version: 5.0.0
+    dependencies:
+      '@types/node': registry.npmjs.org/@types/node/18.11.18
+    dev: true
+
   registry.npmjs.org/@types/bindings/1.5.1:
     resolution: {integrity: sha512-8HzueDeoxGXdsJ0Ep7TOXHGN+woRTWa1bAds30r5we7PCC3P5zrSTRknePLn/KYAubgQv5t/1zkonnStHLCWOg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/@types/bindings/-/bindings-1.5.1.tgz}
     name: '@types/bindings'
@@ -2462,6 +2474,20 @@ packages:
     name: base64-js
     version: 1.5.1
     dev: true
+
+  registry.npmjs.org/bcrypt/5.1.0:
+    resolution: {integrity: sha512-RHBS7HI5N5tEnGTmtR/pppX0mmDSBpQ4aCBsj7CEQfYXDcO74A8sIBYcJMuCsis2E81zDxeENYhv66oZwLiA+Q==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/bcrypt/-/bcrypt-5.1.0.tgz}
+    name: bcrypt
+    version: 5.1.0
+    engines: {node: '>= 10.0.0'}
+    requiresBuild: true
+    dependencies:
+      '@mapbox/node-pre-gyp': registry.npmjs.org/@mapbox/node-pre-gyp/1.0.10
+      node-addon-api: registry.npmjs.org/node-addon-api/5.1.0
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+    dev: false
 
   registry.npmjs.org/binary-extensions/2.2.0:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/binary-extensions/-/binary-extensions-2.2.0.tgz}
