@@ -18,7 +18,10 @@ export class LocalAuthService {
   ): Promise<UserModel | null> {
     const user = await this._userModel.findOne({
       where: {
-        [Op.or]: [{ name: username }, { email: username }],
+        [Op.and]: {
+          issuer: 'local',
+          [Op.or]: [{ name: username }, { email: username }],
+        },
       },
     });
     if (!user) {

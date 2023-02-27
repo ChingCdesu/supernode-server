@@ -21,7 +21,10 @@ export class OidcService extends LoggerProvider {
     const config = useConfig();
     const [userInstance, created] = await this._userModel.findOrCreate({
       where: {
-        [Op.or]: [{ email: user.email }, { uniqueId: user.sub }],
+        [Op.and]: {
+          issuer: 'oidc',
+          uniqueId: user.sub,
+        },
       },
       defaults: {
         name: user.name,
@@ -32,6 +35,14 @@ export class OidcService extends LoggerProvider {
           config.oidc.adminGroup,
         ),
       },
+    });
+
+    await userInstance.update({
+      name: user.name,
+      email: user.email,
+      isAdmin: Array.from((user.groups as string[]) ?? []).includes(
+        config.oidc.adminGroup,
+      ),
     });
 
     if (created) {
