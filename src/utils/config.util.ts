@@ -86,7 +86,7 @@ const defaultConfig: Config = {
   cache: {},
   supernode: {
     port: 7654,
-    federationName: '*Federation',
+    federationName: 'Federation',
     disableSpoofingProtection: false,
     subnetRange: '10.128.255.0-10.255.255.0/24',
   },
