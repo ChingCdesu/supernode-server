@@ -94,6 +94,8 @@ const defaultConfig: Config = {
 
 const envConfigMap: Record<string, string> = {
   APP_LOG_LEVEL: 'app.logLevel',
+  APP_ADMIN_USERNAME: 'app.adminUsername',
+  APP_ADMIN_PASSWORD: 'app.adminPassword',
 
   OIDC_ENABLED: 'oidc.enabled',
   OIDC_NAME: 'oidc.name',

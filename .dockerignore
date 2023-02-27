@@ -52,3 +52,6 @@ lerna-debug.log*
 
 # example files
 appconfig.example.yaml
+
+# deploy files
+**/deploy

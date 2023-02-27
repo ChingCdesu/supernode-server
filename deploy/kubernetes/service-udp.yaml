@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: supernode-udp-service
+  namespace: supernode
+  labels:
+    app: supernode
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 7654
+      targetPort: 7654
+      protocol: UDP
+      name: supernode
+  selector:
+    app: supernode

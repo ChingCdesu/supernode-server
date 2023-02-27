@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: supernode
+  namespace: supernode
+spec:
+  selector:
+    matchLabels:
+      app: supernode
+  template:
+    metadata:
+      labels:
+        app: supernode
+    spec:
+      containers:
+        - name: supernode
+          image: ghcr.io/chingcdesu/supernode-server:latest
+          securityContext:
+            capabilities:
+              add: ["NET_ADMIN"]
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: supernode
+              containerPort: 7654
+              protocol: UDP
+          envFrom:
+            - configMapRef:
+                name: supernode-cm
+            - secretRef:
+                name: supernode-secret
+          volumeMounts:
+            - name: tun
+              mountPath: /dev/net/tun
+            - name: data
+              mountPath: /data
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 100m
+            limits:
+              memory: 500Mi
+              cpu: 500m
+      volumes:
+        - name: tun
+          hostPath:
+            type: "CharDevice"
+            path: /dev/net/tun
+        - name: data
+          persistentVolumeClaim:
+            claimName: supernode-database-pvc

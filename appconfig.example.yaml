@@ -7,6 +7,13 @@ app:
   # error = 1, warn, log, debug, verbose
   ## same as: APP_LOG_LEVEL
   logLevel: 3
+  # username and password of user who id = 1 will be force set values below
+  # admin username, default is `admin`
+  ## same as: APP_ADMIN_USERNAME
+  adminUsername: 'admin'
+  # admin password, default is 16 random characters
+  ## same as: APP_ADMIN_PASSWORD
+  adminPassword: 'mysecret'
 
 oidc:
   # use OpenID Connect Auth, default is `false`
