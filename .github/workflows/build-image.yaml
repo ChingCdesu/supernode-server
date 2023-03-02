@@ -16,7 +16,7 @@ on:
       - ".dockerignore"
       - ".gitignore"
       - ".github/**"
-      - "!.github/workflows/build-image.yml"
+      - "!.github/workflows/build-image.yaml"
 
 defaults:
   run:
