@@ -6,7 +6,7 @@ import path from 'path';
 import { set } from 'lodash';
 import yaml from 'yaml';
 
-import { LogLevel } from '@/utils/logger.util';
+import { LogLevel } from '@/constants/log-level.constant';
 import { PartialDeep } from '@/utils/type.util';
 import { SupernodeOptions } from './native.util';
 
@@ -20,6 +20,7 @@ export interface Config {
 
 export interface AppConfig {
   logLevel: LogLevel;
+  accessLogFilePath?: string;
   adminUsername: string;
   adminPassword: string;
 }
@@ -94,6 +95,7 @@ const defaultConfig: Config = {
 
 const envConfigMap: Record<string, string> = {
   APP_LOG_LEVEL: 'app.logLevel',
+  APP_ACCESS_LOG_FILE_PATH: 'app.accessLogFilePath',
   APP_ADMIN_USERNAME: 'app.adminUsername',
   APP_ADMIN_PASSWORD: 'app.adminPassword',
 

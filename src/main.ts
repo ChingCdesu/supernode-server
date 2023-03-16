@@ -6,10 +6,12 @@ import { NestFactory } from '@nestjs/core';
 import { Redis } from 'ioredis';
 import { VersioningType } from '@nestjs/common';
 
-import { LogLevels } from '@/utils/logger.util';
+import { LogLevels } from '@/constants/log-level.constant';
 import { useConfig } from '@/utils/config.util';
 
 import { AppModule } from '@/app.module';
+import { RequestExceptionFilter } from '@/common/filters/request.exception.filter';
+import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
 
 async function bootstrap() {
   const config = useConfig();
@@ -54,6 +56,8 @@ async function bootstrap() {
   );
   app.use(passport.initialize());
   app.use(passport.session());
+  app.useGlobalFilters(new RequestExceptionFilter());
+  app.useGlobalInterceptors(new TransformInterceptor());
 
   // Start app
   await app.listen(8080);
