@@ -31,6 +31,7 @@ export class OidcController extends LoggerProvider {
   @Get('auth/oidc/callback')
   async callback(@Req() req: Request, @Res() res: Response) {
     await this._oidcService.callback(req.user as OidcUserDto);
+    res.setHeader('X-Authenticated', 'yes');
     if (req.query['redirect']) {
       res.redirect(req.query['redirect'] as string);
     } else {
