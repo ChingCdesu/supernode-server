@@ -32,7 +32,7 @@ oidc:
   clientSecret: '<client secret>'
   # scope of OIDC
   ## same as: OIDC_SCOPE
-  scope: 'openid profile email group'
+  scope: 'openid profile email'
   # app redirect url
   ## same as: OIDC_REDIRECT_URL
   redirectUrl: 'https://supernode.com'

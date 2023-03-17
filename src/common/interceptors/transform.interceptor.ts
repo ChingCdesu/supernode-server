@@ -5,6 +5,7 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { Request } from 'express';
 import { map } from 'rxjs/operators';
 
 import { accessLogger } from '@/utils/access-log.util';
@@ -15,7 +16,7 @@ export class TransformInterceptor implements NestInterceptor {
     context: ExecutionContext,
     next: CallHandler,
   ): Observable<any> {
-    const req = context.getArgByIndex(1).req;
+    const req = context.switchToHttp().getRequest<Request>();
     return next.handle().pipe(
       map((data) => {
         const accessLog =

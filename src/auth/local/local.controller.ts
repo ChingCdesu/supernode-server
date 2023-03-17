@@ -9,13 +9,13 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { Request } from 'express';
 
 import { AuthRequestDto } from '@/modules/user/dtos/auth-request.dto';
 import { LocalAuthGuard } from '@/common/guards/local-auth.guard';
 import { LoggerProvider } from '@/utils/logger.util';
 
 import { LocalAuthService } from './local.service';
-import { Request } from 'express';
 
 @ApiTags('Auth')
 @Controller()
