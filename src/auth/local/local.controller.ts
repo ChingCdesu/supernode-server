@@ -5,12 +5,11 @@ import {
   Delete,
   Post,
   Req,
-  Res,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 
 import { AuthRequestDto } from '@/modules/user/dtos/auth-request.dto';
 import { LocalAuthGuard } from '@/common/guards/local-auth.guard';
@@ -29,12 +28,7 @@ export class LocalAuthController extends LoggerProvider {
   @UseGuards(LocalAuthGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   @Post('auth/login')
-  async login(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Body() _body: AuthRequestDto,
-  ) {
-    res.setHeader('X-Authenticated', 'yes');
+  async login(@Req() req: Request, @Body() _body: AuthRequestDto) {
     return req.user;
   }
 
