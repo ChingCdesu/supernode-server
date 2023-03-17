@@ -32,6 +32,22 @@ import { UserService } from './user.service';
 export class UserControllerV1 {
   constructor(private readonly _userService: UserService) {}
 
+  @ApiOperation({ summary: '获取自己的用户信息' })
+  @UseGuards(AuthenticatedGuard)
+  @Get('me')
+  async me(@Req() req: Request) {
+    return req.user;
+  }
+
+  @ApiOperation({ summary: '更新自己的用户信息' })
+  @UseGuards(AuthenticatedGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @Put('me')
+  async updateMe(@Req() req: Request, @Body() body: UpdateUserDto) {
+    const userId = req.user.id;
+    return await this._userService.update(userId, body);
+  }
+
   @ApiOperation({ summary: '列出用户列表' })
   @UseGuards(AuthenticatedGuard, AdministrationGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
@@ -72,21 +88,5 @@ export class UserControllerV1 {
   @Delete(':id')
   async destroy(@Param('id') userId: number) {
     return await this._userService.destroy(userId);
-  }
-
-  @ApiOperation({ summary: '获取自己的用户信息' })
-  @UseGuards(AuthenticatedGuard)
-  @Get('me')
-  async me(@Req() req: Request) {
-    return req.user;
-  }
-
-  @ApiOperation({ summary: '更新自己的用户信息' })
-  @UseGuards(AuthenticatedGuard)
-  @UsePipes(new ValidationPipe({ transform: true }))
-  @Put('me')
-  async updateMe(@Req() req: Request, @Body() body: UpdateUserDto) {
-    const userId = req.user.id;
-    return await this._userService.update(userId, body);
   }
 }
