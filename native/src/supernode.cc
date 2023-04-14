@@ -23,7 +23,7 @@ SupernodeOption::SupernodeOption(const Napi::Object &options) {
 }
 
 CommunityDevice::CommunityDevice(const std::string &name,
-                             const std::string &publicKey)
+                                 const std::string &publicKey)
     : name(name), publicKey(publicKey) {}
 
 CommunityDevice::CommunityDevice(const Napi::Object &device) {
@@ -42,10 +42,6 @@ CommunityOption::CommunityOption(const Napi::Object &options) {
   if (!options["name"].IsString()) {
     throw std::invalid_argument("\'community.name\' must be \'string\'");
   }
-  if (!options["devices"].IsArray()) {
-    throw std::invalid_argument("\'community.devices\' must be \'array\'");
-  }
-
   if (options["subnet"].IsString()) {
     this->subnet = options["subnet"].As<Napi::String>().Utf8Value();
   }
@@ -55,11 +51,17 @@ CommunityOption::CommunityOption(const Napi::Object &options) {
 
   this->name = options["name"].As<Napi::String>().Utf8Value();
   const auto devices = options["devices"].As<Napi::Array>();
-  for (auto index = 0; index < devices.Length(); ++index) {
-    if (!devices[index].IsObject()) {
-      throw std::invalid_argument("\'community.devicess[%d]\' must be \'object\'");
+  if (!options["devices"].IsUndefined()) {
+    if (!options["devices"].IsArray()) {
+      throw std::invalid_argument("\'community.devices\' must be \'array\'");
     }
-    this->devices.emplace_back(devices[index].As<Napi::Object>());
+    for (auto index = 0; index < devices.Length(); ++index) {
+      if (!devices[index].IsObject()) {
+        throw std::invalid_argument(
+            "\'community.devicess[%d]\' must be \'object\'");
+      }
+      this->devices.emplace_back(devices[index].As<Napi::Object>());
+    }
   }
 }
 
@@ -412,8 +414,7 @@ void Supernode::applyCommunities(
       // has sub-network address
       if (sscanf(it->subnet.c_str(), "%15[^/]/%hhu", ip_str, &bitlen) != 2) {
         traceEvent(TRACE_WARNING,
-                   "bad net/bit format '%s' for community '%c', ignoring; see "
-                   "comments inside community.list file",
+                   "bad net/bit format '%s' for community '%c', ignoring",
                    net_str, cmn_str);
         has_net = 0;
       }
@@ -459,7 +460,8 @@ void Supernode::applyCommunities(
           &(comm->header_iv_ctx_dynamic));
     }
     if (comm->header_encryption == HEADER_ENCRYPTION_UNKNOWN) {
-      comm->header_encryption = it->encryption ? HEADER_ENCRYPTION_ENABLED : HEADER_ENCRYPTION_NONE;
+      comm->header_encryption =
+          it->encryption ? HEADER_ENCRYPTION_ENABLED : HEADER_ENCRYPTION_NONE;
     }
   }
   // calculate allowed user's shared secrets (shared with federation)

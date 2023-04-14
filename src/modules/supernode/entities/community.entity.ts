@@ -1,4 +1,4 @@
-import { Column, HasMany, Model, Table, Unique } from 'sequelize-typescript';
+import { Column, Default, HasMany, Model, Table, Unique } from 'sequelize-typescript';
 
 import { Device } from './device.entity';
 
@@ -11,6 +11,7 @@ export class Community extends Model {
   @Column
   subnet?: string;
 
+  @Default(false)
   @Column
   encryption?: boolean;
 

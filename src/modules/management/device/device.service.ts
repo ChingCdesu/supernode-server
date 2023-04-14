@@ -139,7 +139,7 @@ export class DeviceManagementService extends LoggerProvider {
     const result = await this._deviceModel.create({
       name: createDeviceDto.name,
       publicKey: createDeviceDto.publicKey,
-      owner: createDeviceDto.ownerId,
+      ownerId: createDeviceDto.ownerId,
       communityId,
     });
     const operator = this._req.user;

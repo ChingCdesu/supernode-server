@@ -63,7 +63,12 @@ Napi::Value loadCommunities(const Napi::CallbackInfo &info) {
             .Value());
     goto end;
   }
-  pSn->loadCommunities(info[0].As<Napi::Array>());
+  try {
+    pSn->loadCommunities(info[0].As<Napi::Array>());
+  } catch (const std::invalid_argument &ex) {
+    defered.Reject(Napi::Error::New(info.Env(), ex.what()).Value());
+    goto end;
+  }
   defered.Resolve(info.Env().Undefined());
 end:
   return defered.Promise();

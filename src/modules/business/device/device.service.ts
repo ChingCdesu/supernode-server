@@ -17,6 +17,7 @@ import { SupernodeService } from '@/modules/supernode/supernode.service';
 import { BusinessCreateDeviceDto } from './dtos/create-device.dto';
 import { BusinessUpdateDeviceDto } from './dtos/update-device.dto';
 import { DeviceDto } from './dtos/device.dto';
+import { Community } from '@/modules/supernode/entities/community.entity';
 
 @Injectable({ scope: Scope.REQUEST })
 export class DeviceBusinessService extends LoggerProvider {
@@ -42,6 +43,7 @@ export class DeviceBusinessService extends LoggerProvider {
       order: [['id', paginationOptions.order]],
       offset: paginationOptions.offset,
       limit: paginationOptions.limit,
+      include: Community,
     });
 
     for (let i = 0; i < result.count; ++i) {
