@@ -3,12 +3,8 @@ import { InjectModel } from '@nestjs/sequelize';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 
-import {
-  Pagination,
-  PaginationMeta,
-  PaginationOptions,
-} from '@/utils/pagination.util';
 import { AuditService } from '@/modules/audit/audit.service';
+import { Community } from '@/modules/supernode/entities/community.entity';
 import { CommunityBusinessService } from '@/modules/business/community/community.service';
 import { Device } from '@/modules/supernode/entities/device.entity';
 import { LoggerProvider } from '@/utils/logger.util';
@@ -17,7 +13,6 @@ import { SupernodeService } from '@/modules/supernode/supernode.service';
 import { BusinessCreateDeviceDto } from './dtos/create-device.dto';
 import { BusinessUpdateDeviceDto } from './dtos/update-device.dto';
 import { DeviceDto } from './dtos/device.dto';
-import { Community } from '@/modules/supernode/entities/community.entity';
 
 @Injectable({ scope: Scope.REQUEST })
 export class DeviceBusinessService extends LoggerProvider {
@@ -31,18 +26,13 @@ export class DeviceBusinessService extends LoggerProvider {
     super();
   }
 
-  public async list(
-    paginationOptions: PaginationOptions,
-  ): Promise<Pagination<DeviceDto>> {
+  public async list(): Promise<DeviceDto[]> {
     const data: DeviceDto[] = [];
     const operator = this._req.user;
     const nativeList = await this._supernodeService.listCommunities();
 
     const result = await this._deviceModel.findAndCountAll({
       where: { ownerId: operator.id },
-      order: [['id', paginationOptions.order]],
-      offset: paginationOptions.offset,
-      limit: paginationOptions.limit,
       include: Community,
     });
 
@@ -79,13 +69,7 @@ export class DeviceBusinessService extends LoggerProvider {
         ),
       );
     }
-
-    const meta = new PaginationMeta({
-      itemCount: result.count,
-      paginationOptions,
-    });
-
-    return new Pagination(data, meta);
+    return data;
   }
 
   public async get(deviceId: number): Promise<DeviceDto> {

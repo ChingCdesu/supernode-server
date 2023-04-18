@@ -7,13 +7,11 @@ import {
   Param,
   Post,
   Put,
-  Query,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 
-import { Pagination, PaginationOptions } from '@/utils/pagination.util';
 import { AuthenticatedGuard } from '@/common/guards/authenticated.guard';
 
 import { BusinessCreateDeviceDto } from './dtos/create-device.dto';
@@ -33,10 +31,8 @@ export class DeviceBusinessControllerV1 {
   @UseGuards(AuthenticatedGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   @Get()
-  async list(
-    @Query() paginationOptions: PaginationOptions,
-  ): Promise<Pagination<DeviceDto>> {
-    return await this._deviceBusinessService.list(paginationOptions);
+  async list(): Promise<DeviceDto[]> {
+    return await this._deviceBusinessService.list();
   }
 
   @ApiOperation({ summary: '获取特定id的设备' })
