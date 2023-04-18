@@ -17,7 +17,7 @@ import { CommunityDto } from './dtos/community.dto';
 
 @ApiTags('Community')
 @Controller({
-  path: 'community',
+  path: 'communities',
   version: '1',
 })
 export class CommunityBusinessControllerV1 {

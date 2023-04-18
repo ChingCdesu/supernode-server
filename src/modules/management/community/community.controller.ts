@@ -23,7 +23,7 @@ import { TransferCommunityDto } from './dtos/transfer-community.dto';
 
 @ApiTags('Community Management')
 @Controller({
-  path: 'management/community',
+  path: 'management/communities',
   version: '1',
 })
 export class CommunityManagementControllerV1 {

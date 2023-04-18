@@ -24,7 +24,7 @@ import { ManagementUpdateDeviceDto } from './dtos/update-device.dto';
 
 @ApiTags('Device Management')
 @Controller({
-  path: 'management/community/:communityId/device',
+  path: 'management/communities/:communityId/devices',
   version: '1',
 })
 export class DeviceManagementControllerV1 {

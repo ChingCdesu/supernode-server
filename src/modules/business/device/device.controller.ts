@@ -23,7 +23,7 @@ import { DeviceDto } from './dtos/device.dto';
 
 @ApiTags('User Device Management')
 @Controller({
-  path: '/device',
+  path: '/devices',
   version: '1',
 })
 export class DeviceBusinessControllerV1 {
