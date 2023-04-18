@@ -80,6 +80,7 @@ export class DeviceBusinessService extends LoggerProvider {
         ownerId: operator.id,
       },
       limit: 1,
+      include: Community,
     });
     if (!device) {
       throw new NotFoundException(`Device #${deviceId} not found`);
