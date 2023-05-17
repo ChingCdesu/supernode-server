@@ -50,7 +50,7 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=ref,event=branch,enable=${{ github.ref != format('refs/heads/{0}', 'main') }}
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=raw,value=latest,enable=${{ github.event.base_ref == format('refs/heads/{0}', 'main') }}
             type=ref,event=pr
             type=sha
 
