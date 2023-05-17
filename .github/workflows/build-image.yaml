@@ -51,7 +51,8 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=raw,value=latest,enable=${{ steps.is_pre_release.outputs.prerelease }}
+            type=raw,value=latest,enable=${{ steps.is_pre_release.outputs.prerelease == 'false' }}
+            type=raw,value=nightly,enable=${{ steps.is_pre_release.outputs.prerelease == 'true' }}
             type=ref,event=pr
             type=sha
 
