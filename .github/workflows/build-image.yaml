@@ -39,6 +39,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.token }}
+      
+      - name: Check Variables
+        run: |
+          echo "ref: ${{ github.ref }}"
+          echo "base_ref: ${{ github.base_ref }}"
   
       - name: "Docker: Metadata"
         id: docker-meta
