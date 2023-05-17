@@ -49,8 +49,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=ref,event=branch
-            type=raw,value=latest,enable=${{ github.event.base_ref == 'refs/heads/main' }}
+            type=raw,value=latest,enable=${{ github.base_ref == 'refs/heads/main' }}
             type=ref,event=pr
             type=sha
 
