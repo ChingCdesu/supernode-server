@@ -49,8 +49,8 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=ref,event=branch,enable=${{ github.ref != format('refs/heads/{0}', 'main') }}
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=ref,event=branch,enable=${{ "${GITHUB_REF##*/}" != "main" }}
+            type=raw,value=latest,enable=${{ "${GITHUB_REF##*/}" == "main" }}
             type=ref,event=pr
             type=sha
 
