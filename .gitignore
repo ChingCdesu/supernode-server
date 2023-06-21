@@ -41,3 +41,6 @@ lerna-debug.log*
 # database files
 *.db
 *.sqlite
+
+# docker volumes
+deploy/docker-compose/volumes
