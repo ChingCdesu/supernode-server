@@ -1,0 +1,28 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:9.6
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: supernode
+      POSTGRES_DB: supernode
+    volumes:
+      - ./volumes/postgres-data:/var/lib/postgresql/data
+  supernode:
+    image: ghcr.io/chingcdesu/supernode-server:latest
+    ports:
+      - '7654:7654/udp'
+    environment:
+      - DATA_SOURCE_DIALECT=postgres
+      - DATA_SOURCE_USERNAME=supernode
+      - DATA_SOURCE_PASSWORD=${DB_PASSWORD}
+      - DATA_SOURCE_HOST=postgres
+      - DATA_SOURCE_PORT=5432
+      - DATA_SOURCE_DATABASE=supernode
+      - APP_ADMIN_NAME=admin
+      - APP_ADMIN_PASSWORD=${ADMIN_PASSWORD}
+    cap_add:
+      - 'NET_ADMIN'
