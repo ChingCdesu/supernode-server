@@ -1,8 +1,8 @@
-FROM node:lts-alpine as build
+FROM node:lts as build
 WORKDIR /code
 
-RUN apk update --no-cache
-RUN apk add g++ cmake ninja linux-headers git
+RUN apt update
+RUN apt install g++ cmake ninja-build git -y
 RUN npm i -g cmake-js pnpm
 
 COPY . .
@@ -10,10 +10,8 @@ COPY . .
 RUN pnpm i
 RUN pnpm run build
 
-FROM node:lts-alpine
+FROM node:lts
 WORKDIR /app
-RUN apk update --no-cache
-RUN apk add bash
 RUN npm i -g pnpm
 COPY package.json pnpm-lock.yaml /app/
 RUN pnpm i --prod
