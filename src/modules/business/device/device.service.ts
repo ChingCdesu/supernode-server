@@ -9,6 +9,7 @@ import { CommunityBusinessService } from '@/modules/business/community/community
 import { Device } from '@/modules/supernode/entities/device.entity';
 import { LoggerProvider } from '@/utils/logger.util';
 import { SupernodeService } from '@/modules/supernode/supernode.service';
+import { User } from '@/modules/user/entities/user.entity';
 
 import { BusinessCreateDeviceDto } from './dtos/create-device.dto';
 import { BusinessUpdateDeviceDto } from './dtos/update-device.dto';
@@ -28,12 +29,12 @@ export class DeviceBusinessService extends LoggerProvider {
 
   public async list(): Promise<DeviceDto[]> {
     const data: DeviceDto[] = [];
-    const operator = this._req.user;
+    // const operator = this._req.user;
     const nativeList = await this._supernodeService.listCommunities();
 
     const result = await this._deviceModel.findAndCountAll({
-      where: { ownerId: operator.id },
-      include: Community,
+      // where: { ownerId: operator.id },
+      include: [Community, User],
     });
 
     for (let i = 0; i < result.count; ++i) {
@@ -80,7 +81,7 @@ export class DeviceBusinessService extends LoggerProvider {
         ownerId: operator.id,
       },
       limit: 1,
-      include: Community,
+      include: [Community, User],
     });
     if (!device) {
       throw new NotFoundException(`Device #${deviceId} not found`);

@@ -25,13 +25,13 @@ export class PaginationOptions {
 
   @ApiPropertyOptional({
     minimum: 1,
-    maximum: 50,
+    maximum: 100,
     default: 10,
   })
   @Type(() => Number)
   @IsInt()
   @Min(1)
-  @Max(50)
+  @Max(100, { message: 'exceed max row count limit for single query' })
   @IsOptional()
   readonly limit?: number = 10;
 

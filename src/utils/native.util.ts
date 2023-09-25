@@ -51,7 +51,7 @@ export interface CommunityOptions {
   /**
    * 可访问此社群的设备
    *
-   * 如果`devics`不为空，只有`device`内的设备可以访问该社群，且客户端需要强制启用加密，`encryption`选项会被忽略并强制开启
+   * 如果`devices`不为空，只有`device`内的设备可以访问该社群，且客户端需要强制启用加密，`encryption`选项会被忽略并强制开启
    * 必须指定密钥(`-k`)和只能使用特定的加密方式(`-A4 ChaCha20`和`-A5 SPECK`)
    *
    * 如果`devices`为空，则任何设备都可以访问该社群
@@ -63,7 +63,7 @@ export interface CommunityOptions {
 export interface CommunityPeer {
   /** 用户名，与CommunityUser的`name`相对应，表示该用户在线 */
   name: string;
-  /** 用户的虚拟网卡物理地址 */
+  /** 用户的虚拟网卡MAC地址 */
   mac?: string;
   /** 用户的虚拟网ip */
   ip?: string;

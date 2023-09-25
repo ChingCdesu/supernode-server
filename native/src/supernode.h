@@ -1,6 +1,8 @@
 #pragma once
 
 #include <functional>
+#include <exception>
+#include <stdexcept>
 #include <napi.h>
 #include <string>
 #include <thread>

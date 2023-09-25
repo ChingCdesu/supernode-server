@@ -1,5 +1,4 @@
 #include "supernode.h"
-#include <exception>
 
 SupernodeOption::SupernodeOption(const Napi::Object &options) {
   if (options["port"].IsNumber()) {
