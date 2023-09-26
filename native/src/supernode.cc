@@ -70,7 +70,7 @@ Supernode::Supernode(const SupernodeOption &options) : _worker() {
   sn_init_defaults(&_sn);
   _sn.daemon = 0;
   _sn.lport = options.port;
-  setTraceLevel(1); // TRACE_WARNING & TRACE_ERROR
+  setTraceLevel(4); // TRACE_WARNING & TRACE_ERROR
   traceEvent(TRACE_INFO, "\tUDP service port: %u", _sn.lport);
   snprintf(_sn.federation->community, N2N_COMMUNITY_SIZE - 1, "*%s",
            options.federationName.c_str());
@@ -462,6 +462,7 @@ void Supernode::applyCommunities(
       comm->header_encryption =
           it->encryption ? HEADER_ENCRYPTION_ENABLED : HEADER_ENCRYPTION_NONE;
     }
+    traceEvent(TRACE_INFO, "community '%s' %s encrypted", comm->community, comm->header_encryption == HEADER_ENCRYPTION_ENABLED ? "is" : "isn\'t");
   }
   // calculate allowed user's shared secrets (shared with federation)
   calculate_shared_secrets(&_sn);

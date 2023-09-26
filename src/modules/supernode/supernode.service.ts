@@ -5,6 +5,7 @@ import {
   Community as NativeCommunity,
   createServer,
   getCommunities,
+  getServerInfo,
   loadCommunities,
   startServer,
   stopServer,
@@ -13,6 +14,8 @@ import { LoggerProvider } from '@/utils/logger.util';
 import { useConfig } from '@/utils/config.util';
 
 import { Community as CommunityModal } from './entities/community.entity';
+import { ServerInfoDto } from './dto/server-info.dto';
+import { Device } from './entities/device.entity';
 @Injectable()
 export class SupernodeService
   extends LoggerProvider
@@ -46,8 +49,16 @@ export class SupernodeService
   }
 
   public async syncCommunities(): Promise<void> {
-    const communities = await this._communityModal.findAll();
+    const communities = await this._communityModal.findAll({ include: Device });
     await loadCommunities(communities);
     this.logger.debug('communities loaded');
+  }
+
+  public async getSupernodeInfo(): Promise<ServerInfoDto> {
+    const info = await getServerInfo();
+    return {
+      publicKey: info.publicKey,
+      version: info.version,
+    };
   }
 }
