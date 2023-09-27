@@ -12,8 +12,8 @@ import { SupernodeService } from '@/modules/supernode/supernode.service';
 
 import { CommunityDto } from './dtos/community.dto';
 import { Device } from '@/modules/supernode/entities/device.entity';
+import { DeviceDto } from '@/modules/management/device/dtos/device.dto';
 import { User } from '@/modules/user/entities/user.entity';
-
 @Injectable()
 export class CommunityBusinessService extends LoggerProvider {
   constructor(
@@ -28,7 +28,7 @@ export class CommunityBusinessService extends LoggerProvider {
 
   public async list(
     paginationOptions: PaginationOptions,
-    relations: boolean = false,
+    relations = false,
   ): Promise<Pagination<CommunityDto>> {
     const data: CommunityDto[] = [];
     const nativeList = await this._supernodeService.listCommunities();
@@ -45,13 +45,40 @@ export class CommunityBusinessService extends LoggerProvider {
         (item) => item.name === community.name,
       );
       if (!nativeCommunity) continue;
+      const devices: DeviceDto[] = [];
       if (relations) {
         for (let j = 0; j < community.devices.length; ++j) {
           const device = await this._deviceModal.findByPk(
             community.devices[j].id,
             { include: User },
           );
-          community.devices[j] = device;
+          const nativeDevice = nativeCommunity.peers.find(
+            (peer) => peer.name === device.name,
+          );
+          devices.push(
+            Object.assign(
+              {
+                id: device.id,
+                name: device.name,
+                publicKey: device.publicKey,
+                community: device.community,
+                owner: device.owner,
+                createdAt: device.createdAt,
+                updatedAt: device.updatedAt,
+                isOnline: false,
+              },
+              // 如果设备在线，则返回设备的在线信息
+              nativeDevice
+                ? {
+                    isOnline: true,
+                    mac: nativeDevice.mac,
+                    ip: nativeDevice.ip,
+                    protocol: nativeDevice.protocol,
+                    lastSeen: nativeDevice.lastSeen,
+                  }
+                : {},
+            ),
+          );
         }
       }
       data.push({
@@ -59,7 +86,7 @@ export class CommunityBusinessService extends LoggerProvider {
         name: community.name,
         subnet: community.subnet,
         encryption: community.encryption,
-        devices: community.devices,
+        devices,
         createdAt: community.createdAt,
         updatedAt: community.updatedAt,
         totalUserCount: nativeCommunity.devices.length,
@@ -75,7 +102,10 @@ export class CommunityBusinessService extends LoggerProvider {
     return new Pagination(data, meta);
   }
 
-  public async get(communityId: number, relations: boolean = false): Promise<CommunityDto> {
+  public async get(
+    communityId: number,
+    relations = false,
+  ): Promise<CommunityDto> {
     const community = await this._communityModal.findByPk(communityId, {
       include: relations ? [Device] : [],
     });
@@ -89,12 +119,40 @@ export class CommunityBusinessService extends LoggerProvider {
     if (!nativeCommunity) {
       throw new Error('Community not found');
     }
+    const devices: DeviceDto[] = [];
     if (relations) {
       for (let j = 0; j < community.devices.length; ++j) {
-        const device = await this._deviceModal.findByPk(community.devices[j].id, {
-          include: User,
-        });
-        community.devices[j] = device;
+        const device = await this._deviceModal.findByPk(
+          community.devices[j].id,
+          { include: User },
+        );
+        const nativeDevice = nativeCommunity.peers.find(
+          (peer) => peer.name === device.name,
+        );
+        devices.push(
+          Object.assign(
+            {
+              id: device.id,
+              name: device.name,
+              publicKey: device.publicKey,
+              community: device.community,
+              owner: device.owner,
+              createdAt: device.createdAt,
+              updatedAt: device.updatedAt,
+              isOnline: false,
+            },
+            // 如果设备在线，则返回设备的在线信息
+            nativeDevice
+              ? {
+                  isOnline: true,
+                  mac: nativeDevice.mac,
+                  ip: nativeDevice.ip,
+                  protocol: nativeDevice.protocol,
+                  lastSeen: nativeDevice.lastSeen,
+                }
+              : {},
+          ),
+        );
       }
     }
     return {
@@ -102,7 +160,7 @@ export class CommunityBusinessService extends LoggerProvider {
       name: community.name,
       subnet: community.subnet,
       encryption: community.encryption,
-      devices: community.devices,
+      devices,
       createdAt: community.createdAt,
       updatedAt: community.updatedAt,
       totalUserCount: nativeCommunity.devices.length,

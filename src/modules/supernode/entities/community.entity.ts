@@ -1,4 +1,11 @@
-import { Column, Default, HasMany, Model, Table, Unique } from 'sequelize-typescript';
+import {
+  Column,
+  Default,
+  HasMany,
+  Model,
+  Table,
+  Unique,
+} from 'sequelize-typescript';
 
 import { Device } from './device.entity';
 
