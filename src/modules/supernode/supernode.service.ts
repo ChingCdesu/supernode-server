@@ -14,8 +14,8 @@ import { LoggerProvider } from '@/utils/logger.util';
 import { useConfig } from '@/utils/config.util';
 
 import { Community as CommunityModal } from './entities/community.entity';
-import { ServerInfoDto } from './dto/server-info.dto';
 import { Device } from './entities/device.entity';
+import { ServerInfoDto } from './dtos/server-info.dto';
 @Injectable()
 export class SupernodeService
   extends LoggerProvider
@@ -50,15 +50,22 @@ export class SupernodeService
 
   public async syncCommunities(): Promise<void> {
     const communities = await this._communityModal.findAll({ include: Device });
-    await loadCommunities(communities);
+    // 获取隐藏的字段publicKey
+    const communitiesDto = communities.map((c) => ({
+      ...c.dataValues,
+      devices: c.devices.map((d) => d.dataValues),
+    }));
+    await loadCommunities(communitiesDto);
     this.logger.debug('communities loaded');
   }
 
   public async getSupernodeInfo(): Promise<ServerInfoDto> {
     const info = await getServerInfo();
+    const config = useConfig();
     return {
       publicKey: info.publicKey,
       version: info.version,
+      port: config.supernode.port,
     };
   }
 }

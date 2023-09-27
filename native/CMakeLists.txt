@@ -27,4 +27,9 @@ message(STATUS ${NODE_ADDON_API_DIR})
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${NODE_ADDON_API_DIR})
 
+# macOS Big Sur or higher
+if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin" AND CMAKE_HOST_SYSTEM_VERSION VERSION_GREATER_EQUAL "20.0")
+  target_link_directories(${PROJECT_NAME} PRIVATE "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib")
+endif()
+
 add_definitions(-DNAPI_VERSION=8)

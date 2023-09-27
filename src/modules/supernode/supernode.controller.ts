@@ -1,9 +1,5 @@
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import {
-  Controller,
-  Get,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 
 import { AuthenticatedGuard } from '@/common/guards/authenticated.guard';
 import { SupernodeService } from './supernode.service';

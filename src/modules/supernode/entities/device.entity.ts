@@ -16,7 +16,13 @@ export class Device extends Model {
   name: string;
 
   @Column
-  publicKey: string;
+  get publicKey(): string | undefined {
+    return undefined;
+  }
+
+  set publicKey(value: string) {
+    this.setDataValue('publicKey', value);
+  }
 
   @ForeignKey(() => User)
   @Column

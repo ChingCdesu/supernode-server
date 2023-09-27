@@ -7,8 +7,7 @@ RUN npm i -g cmake-js pnpm
 
 COPY . .
 
-RUN pnpm i
-RUN pnpm run build
+RUN pnpm i && pnpm run build
 
 FROM node:lts
 WORKDIR /app
