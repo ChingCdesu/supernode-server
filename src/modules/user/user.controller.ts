@@ -36,7 +36,12 @@ export class UserControllerV1 {
   @UseGuards(AuthenticatedGuard)
   @Get('me')
   async me(@Req() req: Request) {
-    return req.user;
+    if (req.user instanceof UserModel) {
+      return req.user;
+    } else if (req.user?.sub /* OIDC */) {
+      return await this._userService.getByUniqueId(req.user.sub);
+    }
+    return {};
   }
 
   @ApiOperation({ summary: '更新自己的用户信息' })
