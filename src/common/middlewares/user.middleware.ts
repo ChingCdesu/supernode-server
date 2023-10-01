@@ -12,7 +12,12 @@ export class UserMiddleware implements NestMiddleware {
     private readonly _userModel: typeof User,
   ) {}
   use(req: Request, res: Response, next: NextFunction) {
-    if (!req.user || req.user.id) {
+    if (!req.user) {
+      next();
+      return;
+    }
+    if (req.user.id) {
+      req.localUser = req.user as User;
       next();
       return;
     }
