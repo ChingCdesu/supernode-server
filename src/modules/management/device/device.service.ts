@@ -142,7 +142,7 @@ export class DeviceManagementService extends LoggerProvider {
       ownerId: createDeviceDto.ownerId,
       communityId,
     });
-    const operator = this._req.user;
+    const operator = this._req.localUser;
 
     await this._supernodeService.syncCommunities();
 
@@ -172,7 +172,7 @@ export class DeviceManagementService extends LoggerProvider {
     });
 
     if (affectedRows > 0) {
-      const operator = this._req.user;
+      const operator = this._req.localUser;
       await this._supernodeService.syncCommunities();
 
       await this._auditService.log({
@@ -198,7 +198,7 @@ export class DeviceManagementService extends LoggerProvider {
     });
 
     if (affectedRows > 0) {
-      const operator = this._req.user;
+      const operator = this._req.localUser;
       await this._supernodeService.syncCommunities();
 
       await this._auditService.log({

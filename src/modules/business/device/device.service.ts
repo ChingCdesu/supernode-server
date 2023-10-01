@@ -29,7 +29,7 @@ export class DeviceBusinessService extends LoggerProvider {
 
   public async list(): Promise<DeviceDto[]> {
     const data: DeviceDto[] = [];
-    // const operator = this._req.user;
+    // const operator = this._req.localUser;
     const nativeList = await this._supernodeService.listCommunities();
 
     const result = await this._deviceModel.findAndCountAll({
@@ -74,7 +74,7 @@ export class DeviceBusinessService extends LoggerProvider {
   }
 
   public async get(deviceId: number): Promise<DeviceDto> {
-    const operator = this._req.user;
+    const operator = this._req.localUser;
     const device = await this._deviceModel.findOne({
       where: {
         id: deviceId,
@@ -122,7 +122,7 @@ export class DeviceBusinessService extends LoggerProvider {
   public async create(
     createDeviceDto: BusinessCreateDeviceDto,
   ): Promise<DeviceDto> {
-    const operator = this._req.user;
+    const operator = this._req.localUser;
     const result = await this._deviceModel.create({
       name: createDeviceDto.name,
       publicKey: createDeviceDto.publicKey,
@@ -147,7 +147,7 @@ export class DeviceBusinessService extends LoggerProvider {
     deviceId: number,
     updateDeviceDto: BusinessUpdateDeviceDto,
   ): Promise<void> {
-    const operator = this._req.user;
+    const operator = this._req.localUser;
     const [affectedRows] = await this._deviceModel.update(updateDeviceDto, {
       where: {
         id: deviceId,
@@ -172,7 +172,7 @@ export class DeviceBusinessService extends LoggerProvider {
   }
 
   public async destroy(deviceId: number): Promise<void> {
-    const operator = this._req.user;
+    const operator = this._req.localUser;
     const affectedRows = await this._deviceModel.destroy({
       where: {
         id: deviceId,

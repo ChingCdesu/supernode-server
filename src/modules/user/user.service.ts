@@ -54,21 +54,9 @@ export class UserService extends LoggerProvider {
     return user;
   }
 
-  public async getByUniqueId(uniqueId: string): Promise<UserModel> {
-    const user = await this._userModel.findOne({
-      where: {
-        uniqueId,
-      },
-    });
-    if (isNull(user)) {
-      throw new NotFoundException('User not found');
-    }
-    return user;
-  }
-
   public async create(createUserDto: CreateUserDto): Promise<UserModel> {
     const user = await this._userModel.create(Object.assign(createUserDto));
-    const operator = this._req.user;
+    const operator = this._req.localUser;
     await this._auditService.log({
       action: 'create',
       resource: 'user',
@@ -90,7 +78,7 @@ export class UserService extends LoggerProvider {
       limit: 1,
     });
     if (affectedRows > 0) {
-      const operator = this._req.user;
+      const operator = this._req.localUser;
       await this._auditService.log({
         action: 'create',
         resource: 'user',
@@ -111,7 +99,7 @@ export class UserService extends LoggerProvider {
       limit: 1,
     });
     if (affectedRows > 0) {
-      const operator = this._req.user;
+      const operator = this._req.localUser;
       await this._auditService.log({
         action: 'create',
         resource: 'user',

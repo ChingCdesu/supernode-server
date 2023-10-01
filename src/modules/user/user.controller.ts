@@ -36,12 +36,7 @@ export class UserControllerV1 {
   @UseGuards(AuthenticatedGuard)
   @Get('me')
   async me(@Req() req: Request) {
-    if (req.user instanceof UserModel) {
-      return req.user;
-    } else if (req.user?.sub /* OIDC */) {
-      return await this._userService.getByUniqueId(req.user.sub);
-    }
-    return {};
+    return req.localUser;
   }
 
   @ApiOperation({ summary: '更新自己的用户信息' })
@@ -49,7 +44,7 @@ export class UserControllerV1 {
   @UsePipes(new ValidationPipe({ transform: true }))
   @Put('me')
   async updateMe(@Req() req: Request, @Body() body: UpdateUserDto) {
-    const userId = req.user.id;
+    const userId = req.localUser.id;
     return await this._userService.update(userId, body);
   }
 

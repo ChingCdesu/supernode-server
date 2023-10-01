@@ -1,4 +1,7 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { SequelizeModule } from '@nestjs/sequelize';
+
+import { UserMiddleware } from '@/common/middlewares/user.middleware';
 
 import { DatabaseConfig } from '@/config/database.config';
 
@@ -12,9 +15,11 @@ import { LocalAuthModule } from '@/auth/local/local.module';
 import { OidcModule } from '@/auth/oidc/oidc.module';
 import { SupernodeModule } from '@/modules/supernode/supernode.module';
 import { UserModule } from '@/modules/user/user.module';
+import { User } from '@/modules/user/entities/user.entity';
 
 @Module({
   imports: [
+    SequelizeModule.forFeature([User]),
     DatabaseConfig,
     LocalAuthModule,
     OidcModule,
@@ -28,4 +33,8 @@ import { UserModule } from '@/modules/user/user.module';
     DeviceBusinessModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(UserMiddleware).exclude('auth/(.*)').forRoutes('*');
+  }
+}

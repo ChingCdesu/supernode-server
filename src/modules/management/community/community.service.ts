@@ -95,7 +95,7 @@ export class CommunityManagementService extends LoggerProvider {
     const community = await this._communityModal.create(
       Object.assign(communityDto),
     );
-    const operator = this._req.user;
+    const operator = this._req.localUser;
     await this._auditService.log({
       action: 'create',
       resource: 'community',
@@ -124,7 +124,7 @@ export class CommunityManagementService extends LoggerProvider {
     await community.destroy();
     await this._supernodeService.syncCommunities();
 
-    const operator = this._req.user;
+    const operator = this._req.localUser;
     await this._auditService.log({
       action: 'destroy',
       resource: 'community',
@@ -139,7 +139,7 @@ export class CommunityManagementService extends LoggerProvider {
     if (!community) {
       throw new Error('Community not found');
     }
-    const operator = this._req.user;
+    const operator = this._req.localUser;
     await this._auditService.log({
       action: 'export',
       resource: 'community',
@@ -161,7 +161,7 @@ export class CommunityManagementService extends LoggerProvider {
     const community = await this._communityModal.create(
       Object.assign(communityDto),
     );
-    const operator = this._req.user;
+    const operator = this._req.localUser;
     await this._auditService.log({
       action: 'import',
       resource: 'community',
