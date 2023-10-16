@@ -1,6 +1,6 @@
 import * as crypto from 'crypto';
 import * as fs from 'fs';
-import { defaultsDeep, parseInt, set } from 'lodash';
+import { defaultsDeep, parseInt, set, get } from 'lodash';
 import type { Dialect } from 'sequelize';
 import path from 'path';
 import yaml from 'yaml';
@@ -151,10 +151,11 @@ function parseConfigFromEnv(): PartialDeep<Config> {
   for (const [key, value] of Object.entries(process.env)) {
     if (key in envConfigMap) {
       const path = envConfigMap[key];
-      if (value.toLowerCase() === 'true' || value.toLowerCase() === 'false') {
+      const type = typeof get(defaultConfig, path);
+      if (type === 'boolean') {
         set(parsed, path, value === 'true');
-      } else if (!Number.isNaN(Number.parseInt(value))) {
-        set(parsed, path, Number.parseInt(value));
+      } else if (type === 'number') {
+        set(parsed, path, parseInt(value));
       } else {
         set(parsed, path, value);
       }
